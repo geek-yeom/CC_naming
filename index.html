@@ -9,19 +9,28 @@
 <body>
     <div class="container">
         <h1>현대백화점 문화센터 링크 생성기 🔗</h1>
-        <p>상단의 "바로 신청 링크"와 하단의 "검색 결과 페이지 링크"를 생성할 수 있습니다.</p>
+        <p>상단의 "바로 신청 링크", "앱카드 링크", 하단의 "검색 결과 페이지 링크"를 생성할 수 있습니다.</p>
 
         <div class="section-box">
             <h2>1. 강의 바로 신청 링크 생성기 (linkBridge.do)</h2>
-            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
+            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다. 웹 또는 앱 링크를 선택할 수 있습니다.</p>
+
             <div class="input-group">
-                <label for="base_url_direct">기본 URL (고정):</label>
+                <label for="link_type_direct">링크 유형:</label>
+                <select id="link_type_direct">
+                    <option value="web">웹 링크</option>
+                    <option value="app">앱 링크 (프리즘)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="base_url_direct">기본 URL (자동 설정):</label>
                 <input type="text" id="base_url_direct" value="https://hdeapp.ehyundai.com/linkBridge.do" readonly>
             </div>
 
             <div class="input-group">
                 <label for="store_code_direct">점포 코드 (stCd):</label>
-                <select id="store_code_direct">
+                <select id="store_code_direct" onchange="updateTermCodesByStore()">
                     </select>
             </div>
 
@@ -48,7 +57,24 @@
         </div>
 
         <hr> <div class="section-box">
-            <h2>2. 검색 결과 페이지 링크 생성기 (CT010100_L.do 등)</h2>
+            <h2>2. 앱카드 페이지 링크 생성기 (프리즘)</h2>
+            <p class="section-description">'앱카드'에서 '앱카드' 연결에 사용하는 링크를 생성합니다.</p>
+            <div class="input-group">
+                <label for="appcard_number_prism">앱카드 번호 (evntCrdCd):</label>
+                <input type="text" id="appcard_number_prism" placeholder="예: E1102505404201">
+            </div>
+
+            <button onclick="generatePrismAppcardLink()">링크 생성하기</button>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_prism" href="#" target="_blank"></a>
+                <button onclick="copyLink('prism')" id="copy_button_prism">링크 복사</button>
+            </div>
+        </div>
+
+        <hr> <div class="section-box">
+            <h2>3. 검색 결과 페이지 링크 생성기 (CT010100_L.do 등)</h2>
             <p class="section-description">특정 검색 조건(점포, 카테고리, 검색어 등)이 적용된 강좌 목록 페이지 링크를 생성합니다.</p>
 
             <div class="input-group">
