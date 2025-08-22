@@ -1,5 +1,7 @@
 // --- 섹션 1: 강의 바로 신청 링크 생성기 데이터 (linkBridge.do) ---
 const BASE_URL_DIRECT = "https://hdeapp.ehyundai.com/linkBridge.do";
+const BASE_URL_APP_PRISM = "hdswallet://ehyundai.com";
+const BASE_URL_APPCARD = "https://hdeapp.ehyundai.com/shopping/view/ASI/A01/002/evntGdDetail";
 
 // 점포 코드 데이터: 어드민 -> 점관리에서 확인하신 점 코드를 여기에 추가/수정해주세요.
 const STORE_CODES_DIRECT = {
@@ -18,26 +20,226 @@ const STORE_CODES_DIRECT = {
     "대구": "460",
     "부산": "240",
     "울산": "290"
-    // 필요에 따라 더 추가할 수 있습니다.
 };
 
-// 기수 코드 데이터: **중요! 어드민 -> 기수관리에서 확인하신 현재 및 가까운 기수 코드를 여기에 추가/수정해주세요.**
-// '기수 진행년도 월' 형식으로 표시하면 사용자가 이해하기 쉽습니다.
-const TERM_CODES_DIRECT = {
-    "2025년 12월 (028)": "028",
-    "2025년 11월 (027)": "027",
-    "2025년 10월 (026)": "026",
-    "2025년 9월 (025)": "025",
-    "2025년 8월 (024)": "024", // 예시: 8월 시작 강좌는 024 기수
-    "2025년 7월 (023)": "023",
-    // 실제 사용하실 기수로 업데이트 해주세요.
+// 점포별 기수 코드 데이터
+const STORE_TERM_CODES = {
+    "400": { // 더현대서울
+        "2025년 8월 (024)": "024",
+        "2025년 9월 (025)": "025",
+        "2025년 10월 (026)": "026",
+        "2025년 11월 (027)": "027",
+        "2025년 12월 (028)": "028",
+        "2026년 1월 (029)": "029",
+        "2026년 2월 (030)": "030",
+        "2026년 3월 (031)": "031",
+        "2026년 4월 (032)": "032",
+        "2026년 5월 (033)": "033",
+        "2026년 6월 (034)": "034",
+        "2026년 7월 (035)": "035"
+    },
+    "210": { // 본점
+        "2025년 8월 (164)": "164",
+        "2025년 9월 (165)": "165",
+        "2025년 10월 (166)": "166",
+        "2025년 11월 (167)": "167",
+        "2025년 12월 (168)": "168",
+        "2026년 1월 (169)": "169",
+        "2026년 2월 (170)": "170",
+        "2026년 3월 (171)": "171",
+        "2026년 4월 (172)": "172",
+        "2026년 5월 (173)": "173",
+        "2026년 6월 (174)": "174",
+        "2026년 7월 (175)": "175"
+    },
+    "430": { // 중동
+        "2025년 8월 (094)": "094",
+        "2025년 9월 (095)": "095",
+        "2025년 10월 (096)": "096",
+        "2025년 11월 (097)": "097",
+        "2025년 12월 (098)": "098",
+        "2026년 1월 (099)": "099",
+        "2026년 2월 (100)": "100",
+        "2026년 3월 (101)": "101",
+        "2026년 4월 (102)": "102",
+        "2026년 5월 (103)": "103",
+        "2026년 6월 (104)": "104",
+        "2026년 7월 (105)": "105"
+    },
+    "460": { // 대구
+        "2025년 8월 (062)": "062",
+        "2025년 9월 (063)": "063",
+        "2025년 10월 (064)": "064",
+        "2025년 11월 (065)": "065",
+        "2025년 12월 (066)": "066",
+        "2026년 1월 (067)": "067",
+        "2026년 2월 (068)": "068",
+        "2026년 3월 (069)": "069",
+        "2026년 4월 (070)": "070",
+        "2026년 5월 (071)": "071",
+        "2026년 6월 (072)": "072",
+        "2026년 7월 (073)": "073"
+    },
+    "220": { // 무역
+        "2025년 8월 (154)": "154",
+        "2025년 9월 (155)": "155",
+        "2025년 10월 (156)": "156",
+        "2025년 11월 (157)": "157",
+        "2025년 12월 (158)": "158",
+        "2026년 1월 (159)": "159",
+        "2026년 2월 (160)": "160",
+        "2026년 3월 (161)": "161",
+        "2026년 4월 (162)": "162",
+        "2026년 5월 (163)": "163",
+        "2026년 6월 (164)": "164",
+        "2026년 7월 (165)": "165"
+    },
+    "260": { // 천호
+        "2025년 8월 (118)": "118",
+        "2025년 9월 (119)": "119",
+        "2025년 10월 (120)": "120",
+        "2025년 11월 (121)": "121",
+        "2025년 12월 (122)": "122",
+        "2026년 1월 (123)": "123",
+        "2026년 2월 (124)": "124",
+        "2026년 3월 (125)": "125",
+        "2026년 4월 (126)": "126",
+        "2026년 5월 (127)": "127",
+        "2026년 6월 (128)": "128",
+        "2026년 7월 (129)": "129"
+    },
+    "270": { // 신촌
+        "2025년 8월 (114)": "114",
+        "2025년 9월 (115)": "115",
+        "2025년 10월 (116)": "116",
+        "2025년 11월 (117)": "117",
+        "2025년 12월 (118)": "118",
+        "2026년 1월 (119)": "119",
+        "2026년 2월 (120)": "120",
+        "2026년 3월 (121)": "121",
+        "2026년 4월 (122)": "122",
+        "2026년 5월 (123)": "123",
+        "2026년 6월 (124)": "124",
+        "2026년 7월 (125)": "125"
+    },
+    "410": { // 미아
+        "2025년 8월 (103)": "103",
+        "2025년 9월 (103)": "103",
+        "2025년 10월 (103)": "103",
+        "2025년 11월 (103)": "103",
+        "2025년 12월 (103)": "103",
+        "2026년 1월 (103)": "103",
+        "2026년 2월 (103)": "103",
+        "2026년 3월 (103)": "103",
+        "2026년 4월 (103)": "103",
+        "2026년 5월 (103)": "103",
+        "2026년 6월 (103)": "103",
+        "2026년 7월 (103)": "103"
+    },
+    "420": { // 목동
+        "2025년 8월 (099)": "099",
+        "2025년 9월 (100)": "100",
+        "2025년 10월 (101)": "101",
+        "2025년 11월 (102)": "102",
+        "2025년 12월 (103)": "103",
+        "2026년 1월 (104)": "104",
+        "2026년 2월 (105)": "105",
+        "2026년 3월 (106)": "106",
+        "2026년 4월 (107)": "107",
+        "2026년 5월 (108)": "108",
+        "2026년 6월 (109)": "109",
+        "2026년 7월 (110)": "110"
+    },
+    "450": { // 킨텍스
+        "2025년 8월 (067)": "067",
+        "2025년 9월 (068)": "068",
+        "2025년 10월 (069)": "069",
+        "2025년 11월 (070)": "070",
+        "2025년 12월 (071)": "071",
+        "2026년 1월 (072)": "072",
+        "2026년 2월 (073)": "073",
+        "2026년 3월 (074)": "074",
+        "2026년 4월 (075)": "075",
+        "2026년 5월 (076)": "076",
+        "2026년 6월 (077)": "077",
+        "2026년 7월 (078)": "078"
+    },
+    "480": { // 판교
+        "2025년 8월 (047)": "047",
+        "2025년 9월 (048)": "048",
+        "2025년 10월 (049)": "049",
+        "2025년 11월 (050)": "050",
+        "2025년 12월 (051)": "051",
+        "2026년 1월 (052)": "052",
+        "2026년 2월 (053)": "053",
+        "2026년 3월 (054)": "054",
+        "2026년 4월 (055)": "055",
+        "2026년 5월 (056)": "056",
+        "2026년 6월 (057)": "057",
+        "2026년 7월 (058)": "058"
+    },
+    "750": { // 가든
+        "2025년 8월 (040)": "040",
+        "2025년 9월 (041)": "041",
+        "2025년 10월 (042)": "042",
+        "2025년 11월 (043)": "043",
+        "2025년 12월 (044)": "044",
+        "2026년 1월 (045)": "045",
+        "2026년 2월 (046)": "046",
+        "2026년 3월 (047)": "047",
+        "2026년 4월 (048)": "048",
+        "2026년 5월 (049)": "049",
+        "2026년 6월 (050)": "050",
+        "2026년 7월 (051)": "051"
+    },
+    "290": { // 울산
+        "2025년 8월 (116)": "116",
+        "2025년 9월 (117)": "117",
+        "2025년 10월 (118)": "118",
+        "2025년 11월 (119)": "119",
+        "2025년 12월 (120)": "120",
+        "2026년 1월 (121)": "121",
+        "2026년 2월 (122)": "122",
+        "2026년 3월 (123)": "123",
+        "2026년 4월 (124)": "124",
+        "2026년 5월 (125)": "125",
+        "2026년 6월 (126)": "126",
+        "2026년 7월 (127)": "127"
+    },
+    "470": { // 충청
+        "2025년 8월 (059)": "059",
+        "2025년 9월 (060)": "060",
+        "2025년 10월 (061)": "061",
+        "2025년 11월 (062)": "062",
+        "2025년 12월 (063)": "063",
+        "2026년 1월 (064)": "064",
+        "2026년 2월 (065)": "065",
+        "2026년 3월 (066)": "066",
+        "2026년 4월 (067)": "067",
+        "2026년 5월 (068)": "068",
+        "2026년 6월 (069)": "069",
+        "2026년 7월 (070)": "070"
+    },
+    "240": { // 부산
+        "2025년 8월 (154)": "154",
+        "2025년 9월 (155)": "155",
+        "2025년 10월 (156)": "156",
+        "2025년 11월 (157)": "157",
+        "2025년 12월 (158)": "158",
+        "2026년 1월 (159)": "159",
+        "2026년 2월 (160)": "160",
+        "2026년 3월 (161)": "161",
+        "2026년 4월 (162)": "162",
+        "2026년 5월 (163)": "163",
+        "2026년 6월 (164)": "164",
+        "2026년 7월 (165)": "165"
+    }
 };
 
 // --- 섹션 2: 검색 결과 페이지 링크 생성기 데이터 (CT010100_L.do / ct_01_01_00_01.do) ---
 const BASE_URL_PC_SEARCH = "https://www.ehyundai.com/newCulture/CT/CT010100_L.do";
 const BASE_URL_MOBILE_SEARCH = "https://www.ehyundai.com/mobile/culture/ct_01_01_00_01.do";
 
-// 검색 기능용 점포 코드: '전체 지점 (ALL)' 옵션 포함
 const STORE_CODES_SEARCH = {
     "전체 지점 (ALL)": "ALL",
     "더현대서울": "400",
@@ -57,10 +259,8 @@ const STORE_CODES_SEARCH = {
     "울산": "290"
 };
 
-// 전단 분류별 특정 숫자 (keyword 매개변수 값)
-// 각 카테고리(CH1985, 문화센터, 커넥트)에 맞는 keyword 값을 여기에 정확히 입력해주세요.
 const CATEGORY_KEYWORDS = {
-    "CH": { // CH1985 카테고리
+    "CH": {
         "on 라이브": "38",
         "파인다이닝": "35",
         "살롱 1985": "33",
@@ -70,7 +270,7 @@ const CATEGORY_KEYWORDS = {
         "취향 커뮤니티": "32",
         "인문&아트살롱": "31"
     },
-    "CT": { // 문화센터 (CT) 카테고리
+    "CT": {
         "인문예술": "001",
         "재테크": "002",
         "외국어": "003",
@@ -84,7 +284,7 @@ const CATEGORY_KEYWORDS = {
         "어린이 패밀리": "026",
         "자녀교육 프리맘": "027"
     },
-    "CC": { // 커넥트 (CC) 카테고리 (문화센터와 동일한 키워드 사용)
+    "CC": {
         "인문예술": "001",
         "재테크": "002",
         "외국어": "003",
@@ -102,58 +302,78 @@ const CATEGORY_KEYWORDS = {
 
 // --- 공통 기능 함수 ---
 
-// 웹페이지 로드 시 모든 드롭다운 메뉴 채우기 및 기본 URL 설정
 document.addEventListener('DOMContentLoaded', () => {
     // 섹션 1: 바로 신청 링크 관련 초기 설정
     document.getElementById('base_url_direct').value = BASE_URL_DIRECT;
-    populateDropdown('store_code_direct', STORE_CODES_DIRECT); // 점포 코드 드롭다운 채우기
-    populateDropdown('term_code_direct', TERM_CODES_DIRECT);   // 기수 코드 드롭다운 채우기
+    populateDropdown('store_code_direct', STORE_CODES_DIRECT);
+    
+    // 페이지 로드 시 더현대서울(400)을 기본값으로 선택
+    const defaultStoreCode = "400";
+    document.getElementById('store_code_direct').value = defaultStoreCode;
+    updateTermCodesByStore(defaultStoreCode);
 
-    // 섹션 2: 검색 링크 관련 초기 설정
-    document.getElementById('base_url_search').value = BASE_URL_PC_SEARCH; // 기본값: PC
-    populateDropdown('store_code_search', STORE_CODES_SEARCH); // 검색용 점포 코드 드롭다운 채우기
-    updateSearchKeywordOptions(); // 검색 전단 분류 옵션 초기화
+    // 섹션 3: 검색 링크 관련 초기 설정
+    document.getElementById('base_url_search').value = BASE_URL_PC_SEARCH;
+    populateDropdown('store_code_search', STORE_CODES_SEARCH);
+    updateSearchKeywordOptions();
+
+    // 링크 유형 드롭다운 변경 시 URL 업데이트
+    document.getElementById('link_type_direct').addEventListener('change', (event) => {
+        const linkType = event.target.value;
+        const baseUrlInput = document.getElementById('base_url_direct');
+        if (linkType === 'app') {
+            baseUrlInput.value = BASE_URL_APP_PRISM;
+        } else {
+            baseUrlInput.value = BASE_URL_DIRECT;
+        }
+    });
 });
 
-// 드롭다운 메뉴에 옵션들을 채우는 공통 함수
 function populateDropdown(selectId, optionsMap) {
     const selectElement = document.getElementById(selectId);
-    selectElement.innerHTML = '<option value="">-- 선택 --</option>'; // 기본 '선택' 옵션 추가
+    selectElement.innerHTML = '<option value="">-- 선택 --</option>';
     for (const [key, value] of Object.entries(optionsMap)) {
         const option = document.createElement('option');
         option.value = value;
-        option.textContent = `${key}`; // 옵션 텍스트는 이름만 (예: "더현대서울")
+        option.textContent = key;
         selectElement.appendChild(option);
+    }
+}
+
+// 점포 선택에 따라 기수 드롭다운 업데이트
+function updateTermCodesByStore() {
+    const selectedStoreCode = document.getElementById('store_code_direct').value;
+    const termCodesForStore = STORE_TERM_CODES[selectedStoreCode] || {};
+    populateDropdown('term_code_direct', termCodesForStore);
+
+    const termManualInput = document.getElementById('term_code_manual_direct');
+    if (termManualInput.style.display === 'block') {
+        toggleTermInput('direct');
     }
 }
 
 // --- 섹션 1 함수들 (바로 신청 링크) ---
 
-// 기수 코드 입력 방식 토글 (드롭다운 <-> 직접 입력)
 function toggleTermInput(section) {
     const termSelect = document.getElementById(`term_code_${section}`);
     const termManualInput = document.getElementById(`term_code_manual_${section}`);
-    // 버튼은 select 바로 다음 형제 요소임
-    const toggleButton = termSelect.nextElementSibling; 
+    const toggleButton = termSelect.nextElementSibling;
 
     if (termSelect.style.display === 'none') {
-        // 현재 직접 입력 필드가 보이면 -> 드롭다운으로 변경
         termSelect.style.display = 'block';
         termManualInput.style.display = 'none';
-        termManualInput.value = ''; // 직접 입력 값 초기화
+        termManualInput.value = '';
         toggleButton.textContent = '직접 입력/선택';
     } else {
-        // 현재 드롭다운이 보이면 -> 직접 입력 필드로 변경
         termSelect.style.display = 'none';
         termManualInput.style.display = 'block';
-        termSelect.value = ''; // 드롭다운 선택 값 초기화
+        termSelect.value = '';
         toggleButton.textContent = '드롭다운으로 선택';
     }
 }
 
-// 강의 바로 신청 링크 생성 함수
 function generateDirectLink() {
-    const baseUrl = document.getElementById('base_url_direct').value;
+    const baseUrlInput = document.getElementById('base_url_direct');
     const storeCodeSelect = document.getElementById('store_code_direct');
     const termCodeSelect = document.getElementById('term_code_direct');
     const termCodeManualInput = document.getElementById('term_code_manual_direct');
@@ -162,141 +382,136 @@ function generateDirectLink() {
     let selectedStoreCode = storeCodeSelect.value;
     let selectedTermCode;
 
-    // 기수 입력 방식에 따라 실제 사용될 값 결정
-    if (termCodeSelect.style.display === 'none') { // 직접 입력 필드가 보일 때
+    if (termCodeSelect.style.display === 'none') {
         selectedTermCode = termCodeManualInput.value;
-    } else { // 드롭다운이 보일 때
+    } else {
         selectedTermCode = termCodeSelect.value;
     }
 
-    // 필수 입력값 검사
     if (!selectedStoreCode || !selectedTermCode || !courseNumber) {
         alert("강의 바로 신청 링크: 모든 필수 항목 (점포, 기수, 전단 번호)을 입력/선택해주세요!");
         return;
     }
-
-    // 링크 조합 규칙: https://hdeapp.ehyundai.com/linkBridge.do?n=ACC-A01-002&stCd=400&sqCd=024&crsSqNo=7197
-    // n=ACC-A01-002는 고정 값으로 보입니다.
+    
+    const baseUrl = baseUrlInput.value;
     const fullLink = `${baseUrl}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
 
     const generatedLinkElement = document.getElementById('generated_link_direct');
     generatedLinkElement.href = fullLink;
-    generatedLinkElement.textContent = fullLink; // 화면에 링크 텍스트 표시
+    generatedLinkElement.textContent = fullLink;
 }
 
-// --- 섹션 2 함수들 (검색 링크) ---
+// --- 섹션 2 함수 (앱카드 링크) ---
+function generatePrismAppcardLink() {
+    const appcardNumber = document.getElementById('appcard_number_prism').value;
 
-// 장치 유형 (PC/모바일)에 따라 기본 URL 업데이트 함수
+    if (!appcardNumber) {
+        alert("앱카드 번호를 입력해주세요!");
+        return;
+    }
+
+    const fullLink = `${BASE_URL_APP_PRISM}?w=${BASE_URL_APPCARD}?evntCrdCd=${appcardNumber}`;
+
+    const generatedLinkElement = document.getElementById('generated_link_prism');
+    generatedLinkElement.href = fullLink;
+    generatedLinkElement.textContent = fullLink;
+}
+
+// --- 섹션 3 함수들 (검색 링크) ---
 function updateBaseUrlSearch() {
     const deviceType = document.getElementById('device_type').value;
     const baseUrlInput = document.getElementById('base_url_search');
     if (deviceType === 'pc') {
         baseUrlInput.value = BASE_URL_PC_SEARCH;
-    } else { // mobile
+    } else {
         baseUrlInput.value = BASE_URL_MOBILE_SEARCH;
     }
 }
 
-// 문화센터 카테고리 선택에 따라 '전단 분류 검색' 옵션 업데이트 함수
 function updateSearchKeywordOptions() {
     const categoryType = document.getElementById('category_type').value;
     const keywordSearchTermSelect = document.getElementById('keyword_search_term');
     
-    // 기존 옵션 모두 지우고 기본 옵션 추가
     keywordSearchTermSelect.innerHTML = '<option value="">-- 전단 분류 선택 안함 --</option>';
 
     if (categoryType === 'none') {
-        // 카테고리 선택 안함 -> 전단 분류 옵션 없음
         return;
     }
 
-    // 선택된 카테고리에 맞는 전단 분류 옵션들 가져오기
     const options = CATEGORY_KEYWORDS[categoryType];
-    if (options) { // 옵션이 존재하면
+    if (options) {
         for (const [key, value] of Object.entries(options)) {
             const option = document.createElement('option');
             option.value = value;
-            option.textContent = `${key} (${value})`; // 예: "on 라이브 (38)"
+            option.textContent = `${key} (${value})`;
             keywordSearchTermSelect.appendChild(option);
         }
     }
 }
 
-// 검색 방식 (강좌명/전단분류)에 따라 입력 필드 토글 함수
 function toggleSearchInputs() {
     const searchType = document.getElementById('search_type').value;
-    const nicknameGroup = document.getElementById('nickname_search_group'); // 강좌명 검색 그룹
-    const keywordGroup = document.getElementById('keyword_search_group');   // 전단 분류 검색 그룹
+    const nicknameGroup = document.getElementById('nickname_search_group');
+    const keywordGroup = document.getElementById('keyword_search_group');
 
-    // 일단 두 그룹 모두 숨김
     nicknameGroup.style.display = 'none';
     keywordGroup.style.display = 'none';
 
-    // 선택된 검색 방식에 따라 해당 그룹만 보이게 함
     if (searchType === 'nickname') {
         nicknameGroup.style.display = 'block';
     } else if (searchType === 'keyword') {
         keywordGroup.style.display = 'block';
-        updateSearchKeywordOptions(); // 전단 분류 옵션이 최신 상태인지 확인
+        updateSearchKeywordOptions();
     }
 }
 
-// 검색 결과 페이지 링크 생성 함수
 function generateSearchLink() {
     const baseUrl = document.getElementById('base_url_search').value;
     const categoryType = document.getElementById('category_type').value;
-    const storeCode = document.getElementById('store_code_search').value; // 검색용 점포 코드
+    const storeCode = document.getElementById('store_code_search').value;
     const searchType = document.getElementById('search_type').value;
     const nicknameSearchTerm = document.getElementById('nickname_search_term').value;
     const keywordSearchTerm = document.getElementById('keyword_search_term').value;
 
-    let params = []; // 링크에 추가될 매개변수들을 저장할 배열
+    let params = [];
 
-    // 1. 문화센터 카테고리 구분 (ctGubn) 추가
     if (categoryType !== 'none') {
         params.push(`ctGubn=${categoryType}`);
     }
 
-    // 2. 점포 코드 (stCd) 추가
-    // 규칙: ctGubn이 '문화센터 (CT)' 이거나, ctGubn을 선택하지 않았을 때만 stCd가 적용됩니다.
-    // CH1985나 커넥트(CC)는 자체적으로 점포를 지정하므로 stCd를 추가하지 않습니다.
     if (categoryType === 'none' || categoryType === 'CT') {
-        if (storeCode && storeCode !== "ALL") { // 특정 점포를 선택했다면
+        if (storeCode && storeCode !== "ALL") {
              params.push(`stCd=${storeCode}`);
-        } else if (storeCode === "ALL") { // '전체 지점 (ALL)'을 선택했다면
+        } else if (storeCode === "ALL") {
             params.push(`stCd=ALL`);
         }
     }
 
-    // 3. 검색어 (nickCrsNm) 또는 전단 분류 (keyword) 추가
     if (searchType === 'nickname' && nicknameSearchTerm) {
-        // 검색어는 URL 인코딩이 필요합니다 (한글 깨짐 방지)
         params.push(`nickCrsNm=${encodeURIComponent(nicknameSearchTerm)}`);
     } else if (searchType === 'keyword' && keywordSearchTerm) {
         params.push(`keyword=${keywordSearchTerm}`);
     }
 
     let fullLink = baseUrl;
-    if (params.length > 0) { // 매개변수가 하나라도 있으면 '?'를 붙이고 연결
-        fullLink += '?' + params.join('&'); // 매개변수들을 '&'로 연결
+    if (params.length > 0) {
+        fullLink += '?' + params.join('&');
     }
 
     const generatedLinkElement = document.getElementById('generated_link_search');
     generatedLinkElement.href = fullLink;
-    generatedLinkElement.textContent = fullLink; // 화면에 링크 텍스트 표시
+    generatedLinkElement.textContent = fullLink;
 }
 
-// 공통 링크 복사 함수 (어떤 섹션의 링크를 복사할지 'section' 매개변수로 구분)
 function copyLink(section) {
     const generatedLinkElement = document.getElementById(`generated_link_${section}`);
-    const linkToCopy = generatedLinkElement.textContent; // <a> 태그에 표시된 링크 텍스트 가져오기
+    const linkToCopy = generatedLinkElement.textContent;
 
     if (!linkToCopy) {
         alert("먼저 링크를 생성해주세요!");
         return;
     }
 
-    // 클립보드에 복사
     navigator.clipboard.writeText(linkToCopy).then(() => {
         alert("링크가 클립보드에 복사되었습니다!");
     }).catch(err => {
