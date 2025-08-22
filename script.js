@@ -1,4 +1,5 @@
 // --- 섹션 1: 강의 바로 신청 링크 생성기 데이터 (linkBridge.do) ---
+const BASE_URL_DIRECT_PC = "https://www.ehyundai.com/newCulture/CT/CT010100_V.do";
 const BASE_URL_DIRECT_WEB = "https://hdeapp.ehyundai.com/linkBridge.do";
 const BASE_URL_DIRECT_APP = "hdswallet://ehyundai.com";
 const BASE_URL_APPCARD = "https://hdeapp.ehyundai.com/shopping/view/ASI/A01/002/evntGdDetail";
@@ -375,7 +376,13 @@ function generateDirectLink() {
         return;
     }
     
-    // 웹 링크 생성
+    // PC 링크 생성
+    const pcLink = `${BASE_URL_DIRECT_PC}?stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
+    const generatedPcLinkElement = document.getElementById('generated_link_pc');
+    generatedPcLinkElement.href = pcLink;
+    generatedPcLinkElement.textContent = pcLink;
+
+    // 웹 링크 생성 (모바일)
     const webLink = `${BASE_URL_DIRECT_WEB}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
     const generatedWebLinkElement = document.getElementById('generated_link_web');
     generatedWebLinkElement.href = webLink;
@@ -529,7 +536,6 @@ function resetSection(sectionId) {
 
     // 섹션별 초기 상태 복원
     if (sectionId === 'section-1') {
-        // 섹션 1은 이제 '선택'이 기본값이므로 별도 초기화 코드가 필요 없음
         const termManualInput = document.getElementById('term_code_manual_direct');
         if (termManualInput.style.display === 'block') {
             toggleTermInput('direct');
