@@ -1,6 +1,6 @@
 // --- 섹션 1: 강의 바로 신청 링크 생성기 데이터 (linkBridge.do) ---
-const BASE_URL_DIRECT = "https://hdeapp.ehyundai.com/linkBridge.do";
-const BASE_URL_APP_PRISM = "hdswallet://ehyundai.com";
+const BASE_URL_DIRECT_WEB = "https://hdeapp.ehyundai.com/linkBridge.do";
+const BASE_URL_DIRECT_APP = "hdswallet://ehyundai.com";
 const BASE_URL_APPCARD = "https://hdeapp.ehyundai.com/shopping/view/ASI/A01/002/evntGdDetail";
 
 // 점포 코드 데이터: 어드민 -> 점관리에서 확인하신 점 코드를 여기에 추가/수정해주세요.
@@ -304,7 +304,6 @@ const CATEGORY_KEYWORDS = {
 
 document.addEventListener('DOMContentLoaded', () => {
     // 섹션 1: 바로 신청 링크 관련 초기 설정
-    document.getElementById('base_url_direct').value = BASE_URL_DIRECT;
     populateDropdown('store_code_direct', STORE_CODES_DIRECT);
     
     // 페이지 로드 시 더현대서울(400)을 기본값으로 선택
@@ -316,17 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('base_url_search').value = BASE_URL_PC_SEARCH;
     populateDropdown('store_code_search', STORE_CODES_SEARCH);
     updateSearchKeywordOptions();
-
-    // 링크 유형 드롭다운 변경 시 URL 업데이트
-    document.getElementById('link_type_direct').addEventListener('change', (event) => {
-        const linkType = event.target.value;
-        const baseUrlInput = document.getElementById('base_url_direct');
-        if (linkType === 'app') {
-            baseUrlInput.value = BASE_URL_APP_PRISM;
-        } else {
-            baseUrlInput.value = BASE_URL_DIRECT;
-        }
-    });
 });
 
 function populateDropdown(selectId, optionsMap) {
@@ -373,7 +361,6 @@ function toggleTermInput(section) {
 }
 
 function generateDirectLink() {
-    const baseUrlInput = document.getElementById('base_url_direct');
     const storeCodeSelect = document.getElementById('store_code_direct');
     const termCodeSelect = document.getElementById('term_code_direct');
     const termCodeManualInput = document.getElementById('term_code_manual_direct');
@@ -393,12 +380,17 @@ function generateDirectLink() {
         return;
     }
     
-    const baseUrl = baseUrlInput.value;
-    const fullLink = `${baseUrl}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
+    // 웹 링크 생성
+    const webLink = `${BASE_URL_DIRECT_WEB}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
+    const generatedWebLinkElement = document.getElementById('generated_link_web');
+    generatedWebLinkElement.href = webLink;
+    generatedWebLinkElement.textContent = webLink;
 
-    const generatedLinkElement = document.getElementById('generated_link_direct');
-    generatedLinkElement.href = fullLink;
-    generatedLinkElement.textContent = fullLink;
+    // 앱 링크 생성
+    const appLink = `${BASE_URL_DIRECT_APP}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
+    const generatedAppLinkElement = document.getElementById('generated_link_app');
+    generatedAppLinkElement.href = appLink;
+    generatedAppLinkElement.textContent = appLink;
 }
 
 // --- 섹션 2 함수 (앱카드 링크) ---
@@ -410,7 +402,7 @@ function generatePrismAppcardLink() {
         return;
     }
 
-    const fullLink = `${BASE_URL_APP_PRISM}?w=${BASE_URL_APPCARD}?evntCrdCd=${appcardNumber}`;
+    const fullLink = `${BASE_URL_DIRECT_APP}?w=${BASE_URL_APPCARD}?evntCrdCd=${appcardNumber}`;
 
     const generatedLinkElement = document.getElementById('generated_link_prism');
     generatedLinkElement.href = fullLink;
