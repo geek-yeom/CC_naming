@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .small-button {
-            font-size: 0.7em; /* 기존 0.8em에서 0.7em으로 축소 */
-            padding: 3px 6px; /* 패딩도 80% 수준으로 조정 */
+            font-size: 0.7em;
+            padding: 3px 6px;
         }
     </style>
 </head>
@@ -42,13 +42,19 @@
             <button onclick="generateDirectLink()">링크 생성하기</button>
 
             <div class="result-box">
-                <p>생성된 웹 링크:</p>
+                <p>생성된 PC 링크:</p>
+                <a id="generated_link_pc" href="#" target="_blank"></a>
+                <button class="small-button" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>[APP 전용] 웹 링크 : '앱카드'에서 '강의 페이지'로 이동</p>
                 <a id="generated_link_web" href="#" target="_blank"></a>
                 <button class="small-button" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
             </div>
             
             <div class="result-box mt-3">
-                <p>생성된 앱 링크 (앱카드 > 클래스 페이지 이용):</p>
+                <p>[APP 전용] 앱 링크 : '앱카드'에서 '앱카드'로 이동</p>
                 <a id="generated_link_app" href="#" target="_blank"></a>
                 <button class="small-button" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
             </div>
