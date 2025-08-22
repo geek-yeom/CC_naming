@@ -13,20 +13,7 @@
 
         <div class="section-box">
             <h2>1. 강의 바로 신청 링크 생성기 (linkBridge.do)</h2>
-            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다. 웹 또는 앱 링크를 선택할 수 있습니다.</p>
-
-            <div class="input-group">
-                <label for="link_type_direct">링크 유형:</label>
-                <select id="link_type_direct">
-                    <option value="web">웹 링크</option>
-                    <option value="app">앱 링크 (프리즘)</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="base_url_direct">기본 URL (자동 설정):</label>
-                <input type="text" id="base_url_direct" value="https://hdeapp.ehyundai.com/linkBridge.do" readonly>
-            </div>
+            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
 
             <div class="input-group">
                 <label for="store_code_direct">점포 코드 (stCd):</label>
@@ -50,9 +37,15 @@
             <button onclick="generateDirectLink()">링크 생성하기</button>
 
             <div class="result-box">
-                <p>생성된 링크:</p>
-                <a id="generated_link_direct" href="#" target="_blank"></a>
-                <button onclick="copyLink('direct')" id="copy_button_direct">링크 복사</button>
+                <p>생성된 웹 링크:</p>
+                <a id="generated_link_web" href="#" target="_blank"></a>
+                <button onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
+            </div>
+            
+            <div class="result-box mt-3">
+                <p>생성된 앱 링크 (앱카드 > 클래스 페이지 이용):</p>
+                <a id="generated_link_app" href="#" target="_blank"></a>
+                <button onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
             </div>
         </div>
 
