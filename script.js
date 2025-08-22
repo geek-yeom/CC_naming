@@ -306,11 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 섹션 1: 바로 신청 링크 관련 초기 설정
     populateDropdown('store_code_direct', STORE_CODES_DIRECT);
     
-    // 페이지 로드 시 더현대서울(400)을 기본값으로 선택
-    const defaultStoreCode = "400";
-    document.getElementById('store_code_direct').value = defaultStoreCode;
-    updateTermCodesByStore(defaultStoreCode);
-
     // 섹션 3: 검색 링크 관련 초기 설정
     document.getElementById('base_url_search').value = BASE_URL_PC_SEARCH;
     populateDropdown('store_code_search', STORE_CODES_SEARCH);
@@ -534,8 +529,7 @@ function resetSection(sectionId) {
 
     // 섹션별 초기 상태 복원
     if (sectionId === 'section-1') {
-        document.getElementById('store_code_direct').value = "400";
-        updateTermCodesByStore();
+        // 섹션 1은 이제 '선택'이 기본값이므로 별도 초기화 코드가 필요 없음
         const termManualInput = document.getElementById('term_code_manual_direct');
         if (termManualInput.style.display === 'block') {
             toggleTermInput('direct');
