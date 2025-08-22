@@ -85,4 +85,55 @@
 
             <div class="input-group">
                 <label for="base_url_search">기본 URL:</label>
-                <input type="text" id="base_url_search" value="https://www.ehyundai.com/newCulture/CT/CT010100_L.do"
+                <input type="text" id="base_url_search" value="https://www.ehyundai.com/newCulture/CT/CT010100_L.do" readonly>
+            </div>
+
+            <div class="input-group">
+                <label for="category_type">문화센터 카테고리 (ctGubn):</label>
+                <select id="category_type" onchange="updateSearchKeywordOptions()">
+                    <option value="none">-- 선택 안함 --</option>
+                    <option value="CT">문화센터</option>
+                    <option value="CH">CH1985</option>
+                    <option value="CC">커넥트</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="search_store_group" style="display: block;">
+                <label for="store_code_search">점포 코드 (stCd):</label>
+                <select id="store_code_search">
+                    </select>
+            </div>
+
+            <div class="input-group">
+                <label for="search_type">검색 방식:</label>
+                <select id="search_type" onchange="toggleSearchInputs()">
+                    <option value="none">-- 검색 안함 --</option>
+                    <option value="nickname">강좌명 검색 (nickCrsNm)</option>
+                    <option value="keyword">전단 분류 검색 (keyword)</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="nickname_search_group" style="display: none;">
+                <label for="nickname_search_term">강좌명 검색어 (nickCrsNm):</label>
+                <input type="text" id="nickname_search_term" placeholder="예: 트니">
+            </div>
+
+            <div class="input-group" id="keyword_search_group" style="display: none;">
+                <label for="keyword_search_term">전단 분류 선택 (keyword):</label>
+                <select id="keyword_search_term">
+                    </select>
+            </div>
+
+            <button onclick="generateSearchLink()">링크 생성하기</button>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_search" href="#" target="_blank"></a>
+                <button class="small-button" onclick="copyLink('search')" id="copy_button_search">링크 복사</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
