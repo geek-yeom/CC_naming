@@ -511,3 +511,44 @@ function copyLink(section) {
         alert("링크 복사에 실패했습니다. 수동으로 복사해주세요.");
     });
 }
+
+function resetSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    
+    // 입력 필드 초기화
+    const inputs = section.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        if (input.type === 'text') {
+            input.value = '';
+        } else if (input.tagName === 'SELECT') {
+            input.selectedIndex = 0;
+        }
+    });
+
+    // 결과값 초기화
+    const links = section.querySelectorAll('a[id^="generated_link_"]');
+    links.forEach(link => {
+        link.textContent = '';
+        link.href = '#';
+    });
+
+    // 섹션별 초기 상태 복원
+    if (sectionId === 'section-1') {
+        document.getElementById('store_code_direct').value = "400";
+        updateTermCodesByStore();
+        const termManualInput = document.getElementById('term_code_manual_direct');
+        if (termManualInput.style.display === 'block') {
+            toggleTermInput('direct');
+        }
+    } else if (sectionId === 'section-2') {
+        // 섹션 2는 초기화 시 특별히 할 작업이 없음
+    } else if (sectionId === 'section-3') {
+        document.getElementById('device_type').value = 'pc';
+        updateBaseUrlSearch();
+        document.getElementById('category_type').value = 'none';
+        document.getElementById('store_code_search').value = 'ALL';
+        document.getElementById('search_type').value = 'none';
+        document.getElementById('nickname_search_group').style.display = 'none';
+        document.getElementById('keyword_search_group').style.display = 'none';
+    }
+}
