@@ -1,5 +1,6 @@
 // --- 섹션 1: 강의 바로 신청 링크 생성기 데이터 (linkBridge.do) ---
 const BASE_URL_DIRECT_PC = "https://www.ehyundai.com/newCulture/CT/CT010100_V.do";
+const BASE_URL_DIRECT_MOBILE = "https://www.ehyundai.com/mobile/culture/ct_01_01_01_01.do";
 const BASE_URL_DIRECT_WEB = "https://hdeapp.ehyundai.com/linkBridge.do";
 const BASE_URL_DIRECT_APP = "hdswallet://ehyundai.com";
 const BASE_URL_APPCARD = "https://hdeapp.ehyundai.com/shopping/view/ASI/A01/002/evntGdDetail";
@@ -376,19 +377,25 @@ function generateDirectLink() {
         return;
     }
     
-    // PC 링크 생성
+    // ① PC 링크 생성
     const pcLink = `${BASE_URL_DIRECT_PC}?stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
     const generatedPcLinkElement = document.getElementById('generated_link_pc');
     generatedPcLinkElement.href = pcLink;
     generatedPcLinkElement.textContent = pcLink;
 
-    // 웹 링크 생성 (모바일)
+    // ② 모바일 링크 생성
+    const mobileLink = `${BASE_URL_DIRECT_MOBILE}?stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
+    const generatedMobileLinkElement = document.getElementById('generated_link_mobile');
+    generatedMobileLinkElement.href = mobileLink;
+    generatedMobileLinkElement.textContent = mobileLink;
+
+    // ③ APP 링크 생성
     const webLink = `${BASE_URL_DIRECT_WEB}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
     const generatedWebLinkElement = document.getElementById('generated_link_web');
     generatedWebLinkElement.href = webLink;
     generatedWebLinkElement.textContent = webLink;
 
-    // 앱 링크 생성
+    // ④ 프리즘 '버튼' 링크 생성
     const appLink = `${BASE_URL_DIRECT_APP}?n=ACC-A01-002&stCd=${selectedStoreCode}&sqCd=${selectedTermCode}&crsSqNo=${courseNumber}`;
     const generatedAppLinkElement = document.getElementById('generated_link_app');
     generatedAppLinkElement.href = appLink;
