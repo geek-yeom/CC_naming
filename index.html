@@ -24,20 +24,16 @@
             max-width: 800px;
             width: 100%;
         }
-        h1, h2 {
+        h1 {
             color: #333;
             text-align: center;
-        }
-        h1 {
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
         h2 {
+            color: #333;
+            text-align: center;
             margin-top: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
         }
         .section-box {
@@ -52,9 +48,11 @@
             font-size: 0.9em;
             margin-top: -10px;
             margin-bottom: 20px;
+            text-align: center;
         }
         .input-group {
-            margin-bottom: 15px;
+            margin: 0 auto 15px;
+            max-width: 70%;
         }
         .input-group label {
             display: block;
@@ -75,7 +73,7 @@
             display: block;
             width: 100%;
             padding: 10px;
-            background-color: #6a1b9a;
+            background-color: #2196F3; /* 모든 버튼의 기본 색상 (파란색) */
             color: white;
             border: none;
             border-radius: 5px;
@@ -84,15 +82,17 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #4a148c;
+            background-color: #1976D2; /* 호버 시 색상 (더 어두운 파란색) */
         }
         .result-box {
-            margin-top: 20px;
+            margin: 20px auto 0;
             padding: 15px;
             background-color: #f0f0f5;
             border: 1px solid #e0e0e0;
             border-radius: 5px;
             word-wrap: break-word;
+            text-align: center;
+            max-width: 70%;
         }
         .result-box p {
             font-weight: bold;
@@ -113,20 +113,37 @@
         .result-box a:hover {
             text-decoration: underline;
         }
-        .copy-button {
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* 버튼 사이 간격 */
             margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .generate-button {
+            width: 200px;
+            background-color: #0d47a1; /* 링크 생성 버튼 색상 (진한 파란색) */
+        }
+        .generate-button:hover {
+            background-color: #0a3d84; /* 링크 생성 버튼 호버 색상 */
+        }
+        .reset-button-custom {
+            width: 70px;
+            font-size: 0.8em;
             padding: 5px 10px;
+        }
+        .copy-button-custom {
             font-size: 0.9em;
+            width: 120px;
+            padding: 5px 10px;
+            margin: 10px auto 0;
         }
         hr {
             border: 0;
             height: 1px;
             background-color: #ddd;
             margin: 30px 0;
-        }
-        .small-button {
-            font-size: 0.7em;
-            padding: 3px 6px;
         }
     </style>
 </head>
@@ -135,7 +152,7 @@
         <h1>현대백화점 문화센터 링크 생성기 🔗</h1>
         
         <div class="section-box" id="section-1">
-            <h2>1. 강의 링크 생성 <button class="reset-button small-button" onclick="resetSection('section-1')">초기화</button></h2>
+            <h2>1. 강의 링크 생성</h2>
             <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
 
             <div class="input-group">
@@ -149,7 +166,7 @@
                 <select id="term_code_direct">
                     </select>
                 <input type="text" id="term_code_manual_direct" placeholder="직접 입력 (예: 024, 028)" style="margin-top: 10px; display: none;">
-                <button onclick="toggleTermInput('direct')" class="small-button">직접 입력/선택</button>
+                <button onclick="toggleTermInput('direct')" class="copy-button-custom">직접 입력/선택</button>
             </div>
 
             <div class="input-group">
@@ -157,56 +174,62 @@
                 <input type="text" id="course_number_direct" placeholder="예: 7197">
             </div>
 
-            <button onclick="generateDirectLink()">링크 생성하기</button>
+            <div class="button-group">
+                <button onclick="generateDirectLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-1')">초기화</button>
+            </div>
 
             <div class="result-box">
                 <p>① PC 링크</p>
                 <p class="description">사용 예: 홈페이지 PC 링크, 강의 페이지 확인</p>
                 <a id="generated_link_pc" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
             </div>
 
             <div class="result-box mt-3">
                 <p>② 모바일 링크</p>
                 <p class="description">사용 예: LMS, 카톡 발송 (핸드폰에서 접속)</p>
                 <a id="generated_link_mobile" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('mobile')" id="copy_button_mobile">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('mobile')" id="copy_button_mobile">링크 복사</button>
             </div>
 
             <div class="result-box mt-3">
                 <p>③ APP 링크</p>
                 <p class="description">사용 예: APP으로 접속할 때 (링크 클릭시 핸드폰에서 APP 실행)</p>
                 <a id="generated_link_web" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
             </div>
             
             <div class="result-box mt-3">
                 <p>④ 프리즘 '버튼' 링크</p>
                 <p class="description">사용 예: 프리즘 카드에서 강의 신청 '버튼' 넣을 때 (링크 유형: Web)</p>
                 <a id="generated_link_app" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
             </div>
         </div>
 
         <hr> <div class="section-box" id="section-2">
-            <h2>2. 앱카드 페이지 링크 생성기 (프리즘) <button class="reset-button small-button" onclick="resetSection('section-2')">초기화</button></h2>
+            <h2>2. 앱카드 페이지 링크 생성기 (프리즘)</h2>
             <p class="section-description">'앱카드'에서 '앱카드' 연결에 사용하는 링크를 생성합니다.</p>
             <div class="input-group">
                 <label for="appcard_number_prism">앱카드 번호 (evntCrdCd):</label>
                 <input type="text" id="appcard_number_prism" placeholder="예: E1102505404201">
             </div>
 
-            <button onclick="generatePrismAppcardLink()">링크 생성하기</button>
+            <div class="button-group">
+                <button onclick="generatePrismAppcardLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-2')">초기화</button>
+            </div>
 
             <div class="result-box">
                 <p>생성된 링크:</p>
                 <a id="generated_link_prism" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('prism')" id="copy_button_prism">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('prism')" id="copy_button_prism">링크 복사</button>
             </div>
         </div>
 
         <hr> <div class="section-box" id="section-3">
-            <h2>3. 검색 결과 페이지 링크 생성기 <button class="reset-button small-button" onclick="resetSection('section-3')">초기화</button></h2>
+            <h2>3. 검색 결과 페이지 링크 생성기</h2>
             <p class="section-description">특정 검색 조건(점포, 카테고리, 검색어 등)이 적용된 강좌 목록 페이지 링크를 생성합니다.</p>
 
             <div class="input-group">
@@ -258,12 +281,15 @@
                     </select>
             </div>
 
-            <button onclick="generateSearchLink()">링크 생성하기</button>
+            <div class="button-group">
+                <button onclick="generateSearchLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-3')">초기화</button>
+            </div>
 
             <div class="result-box">
                 <p>생성된 링크:</p>
                 <a id="generated_link_search" href="#" target="_blank"></a>
-                <button class="small-button" onclick="copyLink('search')" id="copy_button_search">링크 복사</button>
+                <button class="copy-button-custom" onclick="copyLink('search')" id="copy_button_search">링크 복사</button>
             </div>
         </div>
     </div>
