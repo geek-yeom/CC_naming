@@ -5,13 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>현대백화점 문화센터 링크 생성기</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 10vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .section-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section-description {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input[type="text"],
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4a148c;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            word-wrap: break-word;
+        }
+        .result-box p {
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .result-box .description {
+            font-weight: normal;
+            font-size: 0.8em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .result-box a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .result-box a:hover {
+            text-decoration: underline;
+        }
+        .copy-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin: 30px 0;
+        }
+        .small-button {
+            font-size: 0.7em;
+            padding: 3px 6px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>현대백화점 문화센터 링크 생성기 🔗</h1>
         
         <div class="section-box" id="section-1">
-            <h2>1. 강의 바로 신청 링크 생성기 <button class="reset-button small-button" onclick="resetSection('section-1')">초기화</button></h2>
+            <h2>1. 강의 링크 생성 <button class="reset-button small-button" onclick="resetSection('section-1')">초기화</button></h2>
             <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
 
             <div class="input-group">
@@ -36,19 +160,29 @@
             <button onclick="generateDirectLink()">링크 생성하기</button>
 
             <div class="result-box">
-                <p>생성된 PC 링크:</p>
+                <p>① PC 링크</p>
+                <p class="description">사용 예: 홈페이지 PC 링크, 강의 페이지 확인</p>
                 <a id="generated_link_pc" href="#" target="_blank"></a>
                 <button class="small-button" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
             </div>
 
             <div class="result-box mt-3">
-                <p>[APP 전용] 웹 링크 : '앱카드'에서 '강의 페이지'로 이동</p>
+                <p>② 모바일 링크</p>
+                <p class="description">사용 예: LMS, 카톡 발송 (핸드폰에서 접속)</p>
+                <a id="generated_link_mobile" href="#" target="_blank"></a>
+                <button class="small-button" onclick="copyLink('mobile')" id="copy_button_mobile">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>③ APP 링크</p>
+                <p class="description">사용 예: APP으로 접속할 때 (링크 클릭시 핸드폰에서 APP 실행)</p>
                 <a id="generated_link_web" href="#" target="_blank"></a>
                 <button class="small-button" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
             </div>
             
             <div class="result-box mt-3">
-                <p>[APP 전용] 앱 링크 : '앱카드'에서 '앱카드'로 이동</p>
+                <p>④ 프리즘 '버튼' 링크</p>
+                <p class="description">사용 예: 프리즘 카드에서 강의 신청 '버튼' 넣을 때 (링크 유형: Web)</p>
                 <a id="generated_link_app" href="#" target="_blank"></a>
                 <button class="small-button" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
             </div>
