@@ -1,158 +1,339 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* 내용이 길어질 경우 상단 정렬 */
-    min-height: 100vh;
-    margin: 20px 0; /* 위아래 여백 추가 */
-    color: #333;
+// 전역 변수와 데이터 정의
+const storeTermData = {
+    '00': {
+        name: '본점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '01': {
+        name: '무역센터점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '02': {
+        name: '천호점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '04': {
+        name: '신촌점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '05': {
+        name: '미아점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '06': {
+        name: '목동점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '08': {
+        name: '중동점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '10': {
+        name: '킨텍스점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '11': {
+        name: '부산점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '12': {
+        name: '대구점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '13': {
+        name: '울산점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '14': {
+        name: '가든파이브점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '15': {
+        name: '판교점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '16': {
+        name: '더현대서울',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    },
+    '18': {
+        name: '동탄점',
+        terms: { '244': '2024 가을', '245': '2024 겨울' }
+    }
+};
+
+const currentTermCode = '244'; // 현재 기수 코드 (자동으로 설정 가능)
+const baseUrl = 'https://www.ehyundai.com/newCulture';
+const prismBaseUrl = 'https://prism.ehyundai.com/app/appcard/';
+
+// DOM이 완전히 로드된 후 실행
+document.addEventListener('DOMContentLoaded', () => {
+    populateStoreCodes();
+    updateTermCodesByStore(); // 초기 기수 코드 설정
+});
+
+/**
+ * 점포 코드 드롭다운을 채웁니다.
+ */
+function populateStoreCodes() {
+    const storeSelects = document.querySelectorAll('select[id^="store_code_"]');
+    
+    storeSelects.forEach(select => {
+        select.innerHTML = '<option value="">점포 선택</option>';
+        for (const code in storeTermData) {
+            const option = document.createElement('option');
+            option.value = code;
+            option.textContent = storeTermData[code].name;
+            select.appendChild(option);
+        }
+    });
 }
 
-.container {
-    background-color: #ffffff;
-    padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px; /* 컨테이너 너비 확장 */
-    text-align: center;
+/**
+ * 선택된 점포에 따라 기수 코드 드롭다운을 업데이트합니다.
+ */
+function updateTermCodesByStore() {
+    const storeSelects = document.querySelectorAll('select[id^="store_code_"]');
+    
+    storeSelects.forEach(select => {
+        const termSelectId = select.id.replace('store_code_', 'term_code_');
+        const termSelect = document.getElementById(termSelectId);
+        const selectedStoreCode = select.value;
+
+        termSelect.innerHTML = '<option value="">기수 선택</option>';
+        if (selectedStoreCode && storeTermData[selectedStoreCode]) {
+            const terms = storeTermData[selectedStoreCode].terms;
+            for (const code in terms) {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = terms[code];
+                if (code === currentTermCode) {
+                    option.selected = true;
+                }
+                termSelect.appendChild(option);
+            }
+        }
+    });
 }
 
-h1 {
-    color: #2c3e50;
-    margin-bottom: 10px;
+/**
+ * 기수 코드 입력 방식을 전환합니다 (드롭다운 <-> 직접 입력).
+ * @param {string} type - 'direct', 'search', 또는 'prism'
+ */
+function toggleTermInput(type) {
+    const selectElement = document.getElementById(`term_code_${type}`);
+    const inputElement = document.getElementById(`term_code_manual_${type}`);
+    
+    if (selectElement.classList.contains('hidden')) {
+        selectElement.classList.remove('hidden');
+        inputElement.classList.add('hidden');
+        inputElement.value = '';
+    } else {
+        selectElement.classList.add('hidden');
+        inputElement.classList.remove('hidden');
+    }
 }
 
-h2 {
-    color: #4a69bd;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #e8f0fe;
-    padding-bottom: 10px;
+/**
+ * 강의 바로 신청 링크를 생성합니다.
+ */
+function generateDirectLink() {
+    const storeCode = document.getElementById('store_code_direct').value;
+    let termCode = document.getElementById('term_code_direct').value;
+    const termInput = document.getElementById('term_code_manual_direct').value;
+    const courseNumber = document.getElementById('course_number_direct').value.padStart(4, '0');
+
+    if (termInput) {
+        termCode = termInput;
+    }
+
+    // 필수 입력값 확인
+    if (!storeCode || !termCode || !courseNumber) {
+        showMessage('모든 필수 값을 입력해주세요.', 'error');
+        return;
+    }
+    
+    const pcLink = `${baseUrl}/web/linkBridge.do?sc=${storeCode}&tc=${termCode}&crsSqNo=${courseNumber}`;
+    const mobileLink = `${baseUrl}/m/linkBridge.do?sc=${storeCode}&tc=${termCode}&crsSqNo=${courseNumber}`;
+    const webLink = `ehyundai.com://linkbridge/go?sc=${storeCode}&tc=${termCode}&crsSqNo=${courseNumber}`;
+    const mobileAppLink = `hyundaiculture://linkbridge/go?sc=${storeCode}&tc=${termCode}&crsSqNo=${courseNumber}`;
+
+    document.getElementById('generated_link_pc').textContent = pcLink;
+    document.getElementById('generated_link_mobile').textContent = mobileLink;
+    document.getElementById('generated_link_web').textContent = webLink;
+    document.getElementById('generated_link_mobile_app').textContent = mobileAppLink;
+    
+    showMessage('링크가 성공적으로 생성되었습니다!', 'success');
 }
 
-.section-description {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 25px;
+/**
+ * 검색 링크를 생성합니다.
+ */
+function generateSearchLink() {
+    const storeCode = document.getElementById('store_code_search').value;
+    let termCode = document.getElementById('term_code_search').value;
+    const termInput = document.getElementById('term_code_manual_search').value;
+    const searchText = document.getElementById('search_text').value;
+
+    if (termInput) {
+        termCode = termInput;
+    }
+
+    // 필수 입력값 확인
+    if (!storeCode || !termCode || !searchText) {
+        showMessage('모든 필수 값을 입력해주세요.', 'error');
+        return;
+    }
+    
+    const encodedSearchText = encodeURIComponent(searchText);
+    const searchLink = `${baseUrl}/web/search.do?sc=${storeCode}&tc=${termCode}&keyword=${encodedSearchText}`;
+    
+    document.getElementById('generated_link_search').textContent = searchLink;
+    
+    showMessage('링크가 성공적으로 생성되었습니다!', 'success');
 }
 
-p {
-    color: #555;
-    margin-bottom: 25px;
+/**
+ * 앱카드 링크를 생성합니다.
+ */
+function generatePrismAppcardLink() {
+    const storeCode = document.getElementById('store_code_prism').value;
+    let termCode = document.getElementById('term_code_prism').value;
+    const termInput = document.getElementById('term_code_manual_prism').value;
+    const courseNumber = document.getElementById('course_number_prism').value.padStart(4, '0');
+
+    if (termInput) {
+        termCode = termInput;
+    }
+
+    // 필수 입력값 확인
+    if (!storeCode || !termCode || !courseNumber) {
+        showMessage('모든 필수 값을 입력해주세요.', 'error');
+        return;
+    }
+
+    const prismLink = `${prismBaseUrl}course-detail?sc=${storeCode}&tc=${termCode}&crsSqNo=${courseNumber}`;
+
+    document.getElementById('generated_link_prism').textContent = prismLink;
+
+    showMessage('링크가 성공적으로 생성되었습니다!', 'success');
 }
 
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
+/**
+ * 특정 섹션의 모든 입력 필드를 초기화합니다.
+ * @param {string} sectionId - 초기화할 섹션의 ID
+ */
+function resetSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    const inputs = section.querySelectorAll('input');
+    const selects = section.querySelectorAll('select');
+    const outputs = section.querySelectorAll('.link-output');
+
+    inputs.forEach(input => input.value = '');
+    
+    selects.forEach(select => {
+        select.selectedIndex = 0;
+    });
+
+    // 기수 직접 입력 필드 숨기기
+    const manualInput = section.querySelector('input[id$="_manual_direct"], input[id$="_manual_search"], input[id$="_manual_prism"]');
+    if (manualInput) {
+        manualInput.classList.add('hidden');
+        const selectElement = section.querySelector('select[id$="_direct"], select[id$="_search"], select[id$="_prism"]');
+        if (selectElement) {
+            selectElement.classList.remove('hidden');
+        }
+    }
+    
+    outputs.forEach(output => output.textContent = '');
+    
+    // 초기 기수 설정
+    updateTermCodesByStore();
+    
+    showMessage('섹션이 초기화되었습니다.', 'info');
 }
 
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #4a69bd;
+/**
+ * 클립보드에 링크를 복사합니다.
+ * @param {string} type - 복사할 링크의 유형
+ */
+function copyLink(type) {
+    let linkElementId;
+    switch (type) {
+        case 'pc':
+            linkElementId = 'generated_link_pc';
+            break;
+        case 'mobile':
+            linkElementId = 'generated_link_mobile';
+            break;
+        case 'web':
+            linkElementId = 'generated_link_web';
+            break;
+        case 'mobile_app':
+            linkElementId = 'generated_link_mobile_app';
+            break;
+        case 'search':
+            linkElementId = 'generated_link_search';
+            break;
+        case 'prism':
+            linkElementId = 'generated_link_prism';
+            break;
+        default:
+            return;
+    }
+    
+    const linkText = document.getElementById(linkElementId).textContent;
+    if (!linkText) {
+        showMessage('복사할 링크가 없습니다.', 'error');
+        return;
+    }
+    
+    const tempInput = document.createElement('textarea');
+    tempInput.value = linkText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    showMessage('링크가 클립보드에 복사되었습니다!', 'success');
 }
 
-.input-group input[type="text"],
-.input-group select { /* select 태그도 스타일 적용 */
-    width: calc(100% - 20px);
-    padding: 12px 10px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
-    -webkit-appearance: none; /* select 기본 스타일 제거 */
-    -moz-appearance: none;
-    appearance: none;
-    background-color: white; /* 배경색 흰색 보장 */
-}
+/**
+ * 사용자에게 메시지를 표시합니다. (alert 대체)
+ * @param {string} message - 표시할 메시지
+ * @param {string} type - 메시지 유형 ('success', 'error', 'info')
+ */
+function showMessage(message, type) {
+    const messageBox = document.createElement('div');
+    messageBox.textContent = message;
+    
+    let bgColor;
+    switch(type) {
+        case 'success':
+            bgColor = 'bg-green-500';
+            break;
+        case 'error':
+            bgColor = 'bg-red-500';
+            break;
+        case 'info':
+        default:
+            bgColor = 'bg-blue-500';
+            break;
+    }
+    
+    messageBox.className = `fixed bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white font-semibold shadow-lg transition-opacity duration-300 opacity-0 ${bgColor}`;
+    document.body.appendChild(messageBox);
 
-.input-group input[type="text"]:focus,
-.input-group select:focus {
-    border-color: #4a69bd;
-    outline: none;
-    box-shadow: 0 0 5px rgba(74, 105, 189, 0.3);
-}
+    // 페이드인 효과
+    setTimeout(() => {
+        messageBox.style.opacity = '1';
+    }, 10);
 
-button {
-    background-color: #4a69bd;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 15px;
-    margin-bottom: 25px;
-}
-
-button:hover {
-    background-color: #3f58a3;
-}
-
-.small-button { /* 기수 직접 입력/선택 토글 버튼 스타일 */
-    background-color: #6c757d; /* 회색 계열 */
-    font-size: 14px;
-    padding: 8px 15px;
-    margin-top: 5px;
-    margin-bottom: 0;
-    display: inline-block; /* 입력 필드와 같은 줄에 표시 */
-    vertical-align: middle; /* 입력 필드와 세로 정렬 */
-}
-
-.small-button:hover {
-    background-color: #5a6268;
-}
-
-.result-box {
-    background-color: #e8f0fe;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px dashed #a7c2f0;
-    word-break: break-all; /* 긴 링크가 넘치지 않도록 */
-    margin-top: 20px;
-}
-
-.result-box p {
-    margin-top: 0;
-    color: #4a69bd;
-    font-weight: bold;
-}
-
-#generated_link_direct,
-#generated_link_search {
-    display: block;
-    color: #007bff;
-    text-decoration: none;
-    font-size: 15px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-#generated_link_direct:hover,
-#generated_link_search:hover {
-    text-decoration: underline;
-}
-
-#copy_button_direct,
-#copy_button_search {
-    background-color: #2196F3;
-    margin-top: 0;
-    padding: 10px 20px;
-    font-size: 16px;
-}
-
-#copy_button_direct:hover,
-#copy_button_search:hover {
-    background-color: #218838;
-}
-
-hr { /* 섹션 구분선 */
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-    margin: 40px 0;
+    // 3초 후 페이드아웃 및 제거
+    setTimeout(() => {
+        messageBox.style.opacity = '0';
+        setTimeout(() => {
+            messageBox.remove();
+        }, 300);
+    }, 3000);
 }
