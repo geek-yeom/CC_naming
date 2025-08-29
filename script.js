@@ -477,7 +477,7 @@ function generateSearchLink() {
     let params = [];
 
     if (categoryType !== 'none') {
-        params.push(`ctGubn=${categoryType}`);
+    params.push(`ctGubn=${categoryType}`);
     }
 
     if (categoryType === 'none' || categoryType === 'CT') {
