@@ -1,54 +1,45 @@
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f6;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: flex-start; /* 내용이 길어질 경우 상단 정렬 */
     min-height: 100vh;
-    padding: 20px;
+    margin: 20px 0; /* 위아래 여백 추가 */
     color: #333;
 }
 
 .container {
     background-color: #ffffff;
-    padding: 30px;
+    padding: 30px 40px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 900px;
-}
-
-.card {
-    background-color: #f8f8f8;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
-}
-
-header {
+    max-width: 600px; /* 컨테이너 너비 확장 */
     text-align: center;
-    margin-bottom: 30px;
 }
 
 h1 {
     color: #2c3e50;
-    margin-bottom: 5px;
-    font-size: 2.5rem;
+    margin-bottom: 10px;
 }
 
 h2 {
     color: #4a69bd;
-    margin-top: 0;
+    margin-top: 30px;
     margin-bottom: 15px;
     border-bottom: 2px solid #e8f0fe;
     padding-bottom: 10px;
-    font-size: 1.75rem;
 }
 
 .section-description {
     color: #666;
     font-size: 0.9em;
+    margin-bottom: 25px;
+}
+
+p {
+    color: #555;
     margin-bottom: 25px;
 }
 
@@ -65,17 +56,17 @@ h2 {
 }
 
 .input-group input[type="text"],
-.input-group select {
-    width: 100%;
-    padding: 12px;
+.input-group select { /* select 태그도 스타일 적용 */
+    width: calc(100% - 20px);
+    padding: 12px 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    font-size: 1rem;
+    font-size: 16px;
     box-sizing: border-box;
-    -webkit-appearance: none;
+    -webkit-appearance: none; /* select 기본 스타일 제거 */
     -moz-appearance: none;
     appearance: none;
-    background-color: white;
+    background-color: white; /* 배경색 흰색 보장 */
 }
 
 .input-group input[type="text"]:focus,
@@ -85,69 +76,35 @@ h2 {
     box-shadow: 0 0 5px rgba(74, 105, 189, 0.3);
 }
 
-.relative-input {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.relative-input select,
-.relative-input input {
-    flex-grow: 1;
-}
-
-.relative-input .small-button {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    color: #6c757d;
-    padding: 8px 15px;
-    border: none;
-    font-size: 0.8rem;
-    cursor: pointer;
-}
-
-.relative-input .small-button:hover {
-    color: #5a6268;
-}
-
-.button-group {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 20px;
-}
-
 button {
+    background-color: #4a69bd;
+    color: white;
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
-    font-size: 1rem;
+    font-size: 18px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+    margin-bottom: 25px;
 }
 
-.button-primary {
-    background-color: #4a69bd;
-    color: white;
-}
-
-.button-primary:hover {
+button:hover {
     background-color: #3f58a3;
-    transform: translateY(-2px);
 }
 
-.button-secondary {
-    background-color: #e2e8f0;
-    color: #4a5568;
+.small-button { /* 기수 직접 입력/선택 토글 버튼 스타일 */
+    background-color: #6c757d; /* 회색 계열 */
+    font-size: 14px;
+    padding: 8px 15px;
+    margin-top: 5px;
+    margin-bottom: 0;
+    display: inline-block; /* 입력 필드와 같은 줄에 표시 */
+    vertical-align: middle; /* 입력 필드와 세로 정렬 */
 }
 
-.button-secondary:hover {
-    background-color: #cbd5e0;
-    transform: translateY(-2px);
+.small-button:hover {
+    background-color: #5a6268;
 }
 
 .result-box {
@@ -155,53 +112,47 @@ button {
     padding: 20px;
     border-radius: 8px;
     border: 1px dashed #a7c2f0;
-    margin-top: 25px;
+    word-break: break-all; /* 긴 링크가 넘치지 않도록 */
+    margin-top: 20px;
 }
 
-.result-title {
-    font-size: 1.25rem;
-    color: #4a69bd;
+.result-box p {
     margin-top: 0;
-    margin-bottom: 10px;
+    color: #4a69bd;
+    font-weight: bold;
 }
 
-.link-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    text-align: left;
+#generated_link_direct,
+#generated_link_search {
+    display: block;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
 
-.link-label {
-    font-weight: 500;
-    color: #666;
+#generated_link_direct:hover,
+#generated_link_search:hover {
+    text-decoration: underline;
 }
 
-.link-output {
-    word-break: break-all;
-    white-space: pre-wrap;
-    font-size: 0.9rem;
-    background-color: white;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    margin-top: 5px;
+#copy_button_direct,
+#copy_button_search {
+    background-color: #2196F3;
+    margin-top: 0;
+    padding: 10px 20px;
+    font-size: 16px;
 }
 
-.copy-button {
-    background-color: #2c984f;
-    color: white;
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    border-radius: 4px;
-    float: right;
-    margin-left: 10px;
+#copy_button_direct:hover,
+#copy_button_search:hover {
+    background-color: #218838;
 }
 
-.copy-button:hover {
-    background-color: #217d41;
-}
-
-.hidden {
-    display: none;
+hr { /* 섹션 구분선 */
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    margin: 40px 0;
 }
