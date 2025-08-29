@@ -4,173 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>현대백화점 문화센터 링크 생성기</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 10vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 25px;
+            padding-bottom: 5px;
+        }
+        .section-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section-description {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-group {
+            margin: 0 auto 15px;
+            max-width: 70%;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input[type="text"],
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3; /* 모든 버튼의 기본 색상 (파란색) */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1976D2; /* 호버 시 색상 (더 어두운 파란색) */
+        }
+        .result-box {
+            margin: 20px auto 0;
+            padding: 15px;
+            background-color: #f0f0f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            word-wrap: break-word;
+            text-align: center;
+            max-width: 70%;
+        }
+        .result-box p {
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .result-box .description {
+            font-weight: normal;
+            font-size: 0.8em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .result-box a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .result-box a:hover {
+            text-decoration: underline;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* 버튼 사이 간격 */
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .generate-button {
+            width: 200px;
+            background-color: #0d47a1; /* 링크 생성 버튼 색상 (진한 파란색) */
+        }
+        .generate-button:hover {
+            background-color: #0a3d84; /* 링크 생성 버튼 호버 색상 */
+        }
+        .reset-button-custom {
+            width: 70px;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .copy-button-custom {
+            font-size: 0.9em;
+            width: 120px;
+            padding: 5px 10px;
+            margin: 10px auto 0;
+            background-color: #2196F3; /* 복사 버튼 색상 (파란색) */
+        }
+        .copy-button-custom:hover {
+            background-color: #1976D2; /* 복사 버튼 호버 색상 */
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin: 30px 0;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-4 sm:p-8">
+<body>
+    <div class="container">
+        <h1>현대백화점 문화센터 링크 생성기 🔗</h1>
+        
+        <div class="section-box" id="section-1">
+            <h2>1. 강의 링크 생성</h2>
+            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
 
-    <div class="container mx-auto space-y-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-800">현대백화점 문화센터 링크 생성기</h1>
-            <p class="mt-2 text-lg text-gray-600">필요한 링크를 간편하게 생성하세요.</p>
-        </header>
-
-        <!-- 섹션 1: 강의 바로 신청 링크 생성기 -->
-        <section id="section-1" class="card p-6">
-            <h2 class="text-2xl font-bold text-gray-700 border-b-2 border-gray-200 pb-2 mb-4">강의 바로 신청 링크 (linkBridge.do)</h2>
-            <div class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="store_code_direct" class="block text-sm font-medium text-gray-700">점포 코드</label>
-                        <select id="store_code_direct" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="updateTermCodesByStore()">
-                            <!-- 옵션은 JavaScript로 채워집니다 -->
-                        </select>
-                    </div>
-                    <div>
-                        <label for="term_code_direct" class="block text-sm font-medium text-gray-700">기수 코드</label>
-                        <div class="relative mt-1">
-                            <select id="term_code_direct" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <!-- 옵션은 JavaScript로 채워집니다 -->
-                            </select>
-                            <input type="text" id="term_code_manual_direct" placeholder="기수 코드 직접 입력 (예: 024)" class="hidden mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <button onclick="toggleTermInput('direct')" class="absolute inset-y-0 right-0 px-3 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">직접 입력/선택</button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label for="course_number_direct" class="block text-sm font-medium text-gray-700">전단 번호 (crsSqNo)</label>
-                    <input type="text" id="course_number_direct" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="예: 0001">
-                </div>
-                
-                <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                    <button onclick="generateDirectLink()" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">링크 생성</button>
-                    <button onclick="resetSection('section-1')" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors">초기화</button>
-                </div>
-
-                <div class="mt-4 border-t pt-4 border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-700 mb-2">생성된 링크</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-sm font-medium text-gray-500">PC (웹사이트)</span>
-                                <button onclick="copyLink('pc')" class="text-blue-500 text-sm hover:underline">복사</button>
-                            </div>
-                            <p class="text-sm link-output" id="generated_link_pc"></p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-sm font-medium text-gray-500">모바일 (웹사이트)</span>
-                                <button onclick="copyLink('mobile')" class="text-blue-500 text-sm hover:underline">복사</button>
-                            </div>
-                            <p class="text-sm link-output" id="generated_link_mobile"></p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-sm font-medium text-gray-500">웹 링크 (앱 연동)</span>
-                                <button onclick="copyLink('web')" class="text-blue-500 text-sm hover:underline">복사</button>
-                            </div>
-                            <p class="text-sm link-output" id="generated_link_web"></p>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-sm font-medium text-gray-500">모바일 앱 바로가기</span>
-                                <button onclick="copyLink('mobile_app')" class="text-blue-500 text-sm hover:underline">복사</button>
-                            </div>
-                            <p class="text-sm link-output" id="generated_link_mobile_app"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 섹션 2 (순서 변경): 검색 링크 생성기 -->
-        <section id="section-2" class="card p-6">
-            <h2 class="text-2xl font-bold text-gray-700 border-b-2 border-gray-200 pb-2 mb-4">검색 링크 생성기 (search.do)</h2>
-            <div class="space-y-4">
-                <div>
-                    <label for="store_code_search" class="block text-sm font-medium text-gray-700">점포 코드</label>
-                    <select id="store_code_search" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="updateTermCodesByStore()">
-                        <!-- 옵션은 JavaScript로 채워집니다 -->
+            <div class="input-group">
+                <label for="store_code_direct">점포 코드 (stCd):</label>
+                <select id="store_code_direct" onchange="updateTermCodesByStore()">
                     </select>
-                </div>
-                <div>
-                    <label for="term_code_search" class="block text-sm font-medium text-gray-700">기수 코드</label>
-                    <div class="relative mt-1">
-                        <select id="term_code_search" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <!-- 옵션은 JavaScript로 채워집니다 -->
-                        </select>
-                        <input type="text" id="term_code_manual_search" placeholder="기수 코드 직접 입력 (예: 024)" class="hidden mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <button onclick="toggleTermInput('search')" class="absolute inset-y-0 right-0 px-3 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">직접 입력/선택</button>
-                    </div>
-                </div>
-                <div>
-                    <label for="search_text" class="block text-sm font-medium text-gray-700">검색어</label>
-                    <input type="text" id="search_text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="예: 요리, 발레, 영어">
-                </div>
-
-                <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                    <button onclick="generateSearchLink()" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">링크 생성</button>
-                    <button onclick="resetSection('section-2')" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors">초기화</button>
-                </div>
-
-                <div class="mt-4 border-t pt-4 border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-700 mb-2">생성된 링크</h3>
-                    <div class="bg-gray-50 p-3 rounded-lg">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-sm font-medium text-gray-500">PC & 모바일</span>
-                            <button onclick="copyLink('search')" class="text-blue-500 text-sm hover:underline">복사</button>
-                        </div>
-                        <p class="text-sm link-output" id="generated_link_search"></p>
-                    </div>
-                </div>
             </div>
-        </section>
 
-        <!-- 섹션 3 (순서 변경): 앱카드 링크 생성기 -->
-        <section id="section-3" class="card p-6">
-            <h2 class="text-2xl font-bold text-gray-700 border-b-2 border-gray-200 pb-2 mb-4">앱카드 링크 생성기 (Prism.do)</h2>
-            <div class="space-y-4">
-                <div>
-                    <label for="store_code_prism" class="block text-sm font-medium text-gray-700">점포 코드</label>
-                    <select id="store_code_prism" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" onchange="updateTermCodesByStore()">
-                        <!-- 옵션은 JavaScript로 채워집니다 -->
+            <div class="input-group">
+                <label for="term_code_direct">기수 코드 (sqCd):</label>
+                <select id="term_code_direct">
                     </select>
-                </div>
-                <div>
-                    <label for="term_code_prism" class="block text-sm font-medium text-gray-700">기수 코드</label>
-                    <div class="relative mt-1">
-                        <select id="term_code_prism" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                            <!-- 옵션은 JavaScript로 채워집니다 -->
-                        </select>
-                        <input type="text" id="term_code_manual_prism" placeholder="기수 코드 직접 입력 (예: 024)" class="hidden mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                        <button onclick="toggleTermInput('prism')" class="absolute inset-y-0 right-0 px-3 flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">직접 입력/선택</button>
-                    </div>
-                </div>
-                <div>
-                    <label for="course_number_prism" class="block text-sm font-medium text-gray-700">전단 번호 (crsSqNo)</label>
-                    <input type="text" id="course_number_prism" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="예: 0001">
-                </div>
-
-                <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
-                    <button onclick="generatePrismAppcardLink()" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors">링크 생성</button>
-                    <button onclick="resetSection('section-3')" class="px-6 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors">초기화</button>
-                </div>
-
-                <div class="mt-4 border-t pt-4 border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-700 mb-2">생성된 링크</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-sm font-medium text-gray-500">PC & 모바일</span>
-                                <button onclick="copyLink('prism')" class="text-blue-500 text-sm hover:underline">복사</button>
-                            </div>
-                            <p class="text-sm link-output" id="generated_link_prism"></p>
-                        </div>
-                    </div>
-                </div>
+                <input type="text" id="term_code_manual_direct" placeholder="직접 입력 (예: 024, 028)" style="margin-top: 10px; display: none;">
+                <button onclick="toggleTermInput('direct')" class="copy-button-custom">직접 입력/선택</button>
             </div>
-        </section>
+
+            <div class="input-group">
+                <label for="course_number_direct">전단 번호 (crsSqNo):</label>
+                <input type="text" id="course_number_direct" placeholder="예: 7197">
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateDirectLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-1')">초기화</button>
+            </div>
+
+            <div class="result-box">
+                <p>① PC 링크</p>
+                <p class="description">사용 예: 홈페이지 PC 링크, 강의 페이지 확인</p>
+                <a id="generated_link_pc" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>② 모바일 링크</p>
+                <p class="description">사용 예: LMS, 카톡 발송 (핸드폰에서 접속)</p>
+                <a id="generated_link_mobile" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('mobile')" id="copy_button_mobile">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>③ APP 링크</p>
+                <p class="description">사용 예: APP으로 접속할 때 (링크 클릭시 핸드폰에서 APP 실행)</p>
+                <a id="generated_link_web" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
+            </div>
+            
+            <div class="result-box mt-3">
+                <p>④ 프리즘 '버튼' 링크</p>
+                <p class="description">사용 예: 프리즘 카드에서 강의 신청 '버튼' 넣을 때 (링크 유형: Web)</p>
+                <a id="generated_link_app" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
+            </div>
+        </div>
+
+        <hr> <div class="section-box" id="section-2">
+            <h2>2. 앱카드 페이지 링크 생성기 (프리즘)</h2>
+            <p class="section-description">'앱카드'에서 '앱카드' 연결에 사용하는 링크를 생성합니다.</p>
+            <div class="input-group">
+                <label for="appcard_number_prism">앱카드 번호 (evntCrdCd):</label>
+                <input type="text" id="appcard_number_prism" placeholder="예: E1102505404201">
+            </div>
+
+            <div class="button-group">
+                <button onclick="generatePrismAppcardLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-2')">초기화</button>
+            </div>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_prism" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('prism')" id="copy_button_prism">링크 복사</button>
+            </div>
+        </div>
+
+        <hr> <div class="section-box" id="section-3">
+            <h2>3. 검색 결과 페이지 링크 생성기</h2>
+            <p class="section-description">특정 검색 조건(점포, 카테고리, 검색어 등)이 적용된 강좌 목록 페이지 링크를 생성합니다.</p>
+
+            <div class="input-group">
+                <label for="device_type">장치 유형:</label>
+                <select id="device_type" onchange="updateBaseUrlSearch()">
+                    <option value="pc">PC</option>
+                    <option value="mobile">모바일 웹</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="base_url_search">기본 URL:</label>
+                <input type="text" id="base_url_search" value="https://www.ehyundai.com/newCulture/CT/CT010100_L.do" readonly>
+            </div>
+
+            <div class="input-group">
+                <label for="category_type">문화센터 카테고리 (ctGubn):</label>
+                <select id="category_type" onchange="updateSearchKeywordOptions()">
+                    <option value="none">-- 선택 안함 --</option>
+                    <option value="CT">문화센터</option>
+                    <option value="CH">CH1985</option>
+                    <option value="CC">커넥트</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="search_store_group" style="display: block;">
+                <label for="store_code_search">점포 코드 (stCd):</label>
+                <select id="store_code_search">
+                    </select>
+            </div>
+
+            <div class="input-group">
+                <label for="search_type">검색 방식:</label>
+                <select id="search_type" onchange="toggleSearchInputs()">
+                    <option value="none">-- 검색 안함 --</option>
+                    <option value="nickname">강좌명 검색 (nickCrsNm)</option>
+                    <option value="keyword">전단 분류 검색 (keyword)</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="nickname_search_group" style="display: none;">
+                <label for="nickname_search_term">강좌명 검색어 (nickCrsNm):</label>
+                <input type="text" id="nickname_search_term" placeholder="예: 트니">
+            </div>
+
+            <div class="input-group" id="keyword_search_group" style="display: none;">
+                <label for="keyword_search_term">전단 분류 선택 (keyword):</label>
+                <select id="keyword_search_term">
+                    </select>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateSearchLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-3')">초기화</button>
+            </div>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_search" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('search')" id="copy_button_search">링크 복사</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
