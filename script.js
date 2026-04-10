@@ -1,6 +1,6 @@
 /**
  * 현대백화점 문화센터 링크 생성기 - JavaScript
- * 수정사항: ③ APP 링크 및 ④ 프리즘 버튼 링크의 파라미터 구조 및 인코딩 로직 수정
+ * 수정사항: ② 앱카드 페이지 링크 생성기 딥링크 파라미터 및 인코딩 구조 최적화
  */
 
 // --- 설정 데이터 ---
@@ -99,18 +99,16 @@ function generateDirectLink() {
     updateDisplay('generated_link_mobile', mobileLink);
 
     // ③ APP 링크 (Web Bridge 활용)
-    // 현대백화점 앱 내에서 문화센터 상세 페이지(ACC-A01-002)를 호출하는 규격
     const webBridgeParams = `n=ACC-A01-002&stCd=${stCd}&sqCd=${sqCd}&crsSqNo=${crsSqNo}`;
     const webBridgeLink = `${BASE_URL_DIRECT_WEB}?${webBridgeParams}`;
     updateDisplay('generated_link_web', webBridgeLink);
 
     // ④ 프리즘 '버튼' 링크 (Deep Link 프로토콜 활용)
-    // 링크 타입이 Web일 경우에도 브릿지 주소를 그대로 사용하거나, 딥링크 프로토콜을 사용합니다.
     const appDeepLink = `${BASE_URL_DIRECT_APP}?${webBridgeParams}`;
     updateDisplay('generated_link_app', appDeepLink);
 }
 
-// --- 2. 앱카드 프리즘 링크 생성 로직 ---
+// --- 2. 앱카드 페이지 링크 생성 로직 (프리즘) ---
 function generatePrismAppcardLink() {
     const appcardNo = document.getElementById('appcard_number_prism').value;
     if (!appcardNo) {
@@ -118,10 +116,11 @@ function generatePrismAppcardLink() {
         return;
     }
     
-    // 앱카드 상세 페이지 URL 구성
+    // 앱카드 상세 페이지 URL 구성 (순수 웹 URL)
     const targetUrl = `${BASE_URL_APPCARD}?evntCrdCd=${appcardNo}`;
     
-    // 프리즘 앱 내부에서 해당 URL을 호출하기 위한 'w' 파라미터 적용 (URL 인코딩 필수)
+    // 프리즘 앱 내부 웹뷰를 호출하기 위해 전체 URL을 'w' 파라미터에 담아 인코딩
+    // hdswallet://ehyundai.com?w=[Encoded_URL] 구조
     const fullLink = `${BASE_URL_DIRECT_APP}?w=${encodeURIComponent(targetUrl)}`;
     
     updateDisplay('generated_link_prism', fullLink);
