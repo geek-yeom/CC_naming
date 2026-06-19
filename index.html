@@ -1,309 +1,303 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문화센터 강좌검색 링크 생성기</title>
-<style>
-  :root {
-    --green: #023432;
-    --orange: #d96b00;
-    --hyundai-green: #4a675c;
-    --gray-bg: #f2f2f2;
-    --blue-gray: #c5ccd0;
-    --black: #1a1a1a;
-    --text: #222;
-    --text-sub: #666;
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-    color: var(--text);
-    background: #fff;
-    margin: 0;
-    padding: 40px 20px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 720px; margin: 0 auto; }
-
-  .header { margin-bottom: 32px; }
-  .eyebrow {
-    font-size: 12px; letter-spacing: 0.12em; color: var(--green);
-    font-weight: 700; text-transform: uppercase; margin-bottom: 8px;
-  }
-  .title { font-size: 24px; font-weight: 800; color: var(--black); margin: 0; letter-spacing: -0.01em; }
-  .subtitle { font-size: 13px; color: var(--text-sub); margin-top: 6px; }
-
-  .divider { height: 2px; background: var(--black); margin: 0 0 28px; }
-
-  .field { margin-bottom: 22px; }
-  .field-label {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 13px; font-weight: 700; color: var(--black); margin-bottom: 8px;
-  }
-  .field-num {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--green); color: #fff; font-size: 11px; font-weight: 700;
-  }
-
-  select, input[type="text"] {
-    width: 100%; font-size: 14px; padding: 12px 14px;
-    border: 1px solid var(--blue-gray); border-radius: 2px;
-    background: #fff; color: var(--text); font-family: inherit;
-    transition: border-color 0.15s;
-  }
-  select:focus, input[type="text"]:focus {
-    outline: none; border-color: var(--green);
-  }
-  select:disabled { background: var(--gray-bg); color: #999; cursor: not-allowed; }
-
-  .gen-btn {
-    width: 100%; font-size: 15px; font-weight: 700; padding: 14px;
-    background: var(--black); color: #fff; border: none; border-radius: 2px;
-    cursor: pointer; font-family: inherit; letter-spacing: 0.02em;
-    transition: background 0.15s; margin-top: 4px;
-  }
-  .gen-btn:hover { background: #000; }
-
-  .result { margin-top: 32px; display: none; }
-  .result.show { display: block; animation: fade 0.25s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
-  .result-head {
-    display: flex; align-items: baseline; gap: 8px;
-    border-top: 1px solid var(--blue-gray); padding-top: 20px; margin-bottom: 16px;
-  }
-  .result-count { font-size: 15px; font-weight: 800; color: var(--green); }
-  .result-meta { font-size: 12px; color: var(--text-sub); }
-
-  .link-card {
-    border: 1px solid var(--blue-gray); border-radius: 2px;
-    padding: 14px 16px; margin-bottom: 12px; background: #fff;
-  }
-  .link-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .link-badge {
-    font-size: 11px; font-weight: 700; color: #fff; background: var(--green);
-    padding: 3px 9px; border-radius: 2px; letter-spacing: 0.03em;
-  }
-  .link-badge.mobile { background: var(--hyundai-green); }
-  .link-card-body { display: flex; align-items: center; gap: 10px; }
-  .link-url {
-    flex: 1; font-size: 12px; color: var(--text); word-break: break-all;
-    background: var(--gray-bg); padding: 9px 11px; border-radius: 2px;
-    font-family: 'SF Mono', Consolas, monospace; line-height: 1.5;
-  }
-  .copy-btn {
-    flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 9px 16px;
-    background: #fff; color: var(--green); border: 1px solid var(--green);
-    border-radius: 2px; cursor: pointer; font-family: inherit;
-    transition: all 0.15s; white-space: nowrap; min-width: 64px;
-  }
-  .copy-btn:hover { background: var(--green); color: #fff; }
-  .copy-btn.done { background: var(--green); color: #fff; border-color: var(--green); }
-  .copy-btn:disabled { cursor: default; }
-
-  .open-btn {
-    flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 9px 16px;
-    background: var(--black); color: #fff; border: 1px solid var(--black);
-    border-radius: 2px; cursor: pointer; font-family: inherit;
-    transition: all 0.15s; white-space: nowrap; min-width: 64px;
-  }
-  .open-btn:hover { background: #000; }
-
-  .reset-row { text-align: center; margin-top: 18px; }
-  .reset-btn {
-    font-size: 12px; font-weight: 600; color: var(--text-sub);
-    background: none; border: none; cursor: pointer; font-family: inherit;
-    padding: 6px 10px; letter-spacing: 0.02em; transition: color 0.15s;
-  }
-  .reset-btn:hover { color: var(--green); }
-
-  @media (max-width: 480px) {
-    body { padding: 28px 16px; }
-    .title { font-size: 20px; }
-    .link-card-body { flex-direction: column; align-items: stretch; }
-    .copy-btn, .open-btn { width: 100%; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현대백화점 문화센터 링크 생성기</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 10vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-top: 25px;
+            padding-bottom: 5px;
+        }
+        .section-box {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section-description {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-group {
+            margin: 0 auto 15px;
+            max-width: 70%;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input[type="text"],
+        .input-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3; /* 모든 버튼의 기본 색상 (파란색) */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1976D2; /* 호버 시 색상 (더 어두운 파란색) */
+        }
+        .result-box {
+            margin: 20px auto 0;
+            padding: 15px;
+            background-color: #f0f0f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            word-wrap: break-word;
+            text-align: center;
+            max-width: 70%;
+        }
+        .result-box p {
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .result-box .description {
+            font-weight: normal;
+            font-size: 0.8em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .result-box a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .result-box a:hover {
+            text-decoration: underline;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* 버튼 사이 간격 */
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .generate-button {
+            width: 200px;
+            background-color: #0d47a1; /* 링크 생성 버튼 색상 (진한 파란색) */
+        }
+        .generate-button:hover {
+            background-color: #0a3d84; /* 링크 생성 버튼 호버 색상 */
+        }
+        .reset-button-custom {
+            width: 70px;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .copy-button-custom {
+            font-size: 0.9em;
+            width: 120px;
+            padding: 5px 10px;
+            margin: 10px auto 0;
+            background-color: #2196F3; /* 복사 버튼 색상 (파란색) */
+        }
+        .copy-button-custom:hover {
+            background-color: #1976D2; /* 복사 버튼 호버 색상 */
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin: 30px 0;
+        }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="header">
-    <div class="eyebrow">The Hyundai Culture</div>
-    <h1 class="title">문화센터 강좌검색 링크 생성기</h1>
-    <p class="subtitle">카테고리와 점을 선택하고 검색어를 입력하면 PC·모바일 링크를 만들어 드립니다.</p>
-  </div>
-  <div class="divider"></div>
+    <div class="container">
+        <h1>현대백화점 문화센터 링크 생성기 🔗</h1>
+        
+        <div class="section-box" id="section-1">
+            <h2>1. 강의 링크 생성</h2>
+            <p class="section-description">강좌 개설 후 점코드, 기수, 전단번호를 넣어 바로 신청 가능한 링크를 생성합니다.</p>
 
-  <div class="field">
-    <div class="field-label"><span class="field-num">1</span>카테고리</div>
-    <select id="category" onchange="updateStores()">
-      <option value="">선택하세요</option>
-      <option value="CH">CH 1985</option>
-      <option value="GENERAL">문화센터</option>
-      <option value="CC">컬처커넥트</option>
-    </select>
-  </div>
+            <div class="input-group">
+                <label for="store_code_direct">점포 코드 (stCd):</label>
+                <select id="store_code_direct" onchange="updateTermCodesByStore()">
+                    </select>
+            </div>
 
-  <div class="field">
-    <div class="field-label"><span class="field-num">2</span>점</div>
-    <select id="store" disabled>
-      <option value="">카테고리를 먼저 선택하세요</option>
-    </select>
-  </div>
+            <div class="input-group">
+                <label for="term_code_direct">기수 코드 (sqCd):</label>
+                <select id="term_code_direct">
+                    </select>
+                <input type="text" id="term_code_manual_direct" placeholder="직접 입력 (예: 024, 028)" style="margin-top: 10px; display: none;">
+                <button onclick="toggleTermInput('direct')" class="copy-button-custom">직접 입력/선택</button>
+            </div>
 
-  <div class="field">
-    <div class="field-label"><span class="field-num">3</span>검색 키워드</div>
-    <input type="text" id="keyword" placeholder="예: 키즈  (비워두면 전체 강좌)">
-  </div>
+            <div class="input-group">
+                <label for="course_number_direct">전단 번호 (crsSqNo):</label>
+                <input type="text" id="course_number_direct" placeholder="예: 7197">
+            </div>
 
-  <button class="gen-btn" onclick="generate()">링크 생성</button>
+            <div class="button-group">
+                <button onclick="generateDirectLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-1')">초기화</button>
+            </div>
 
-  <div class="result" id="result">
-    <div class="result-head">
-      <span class="result-count">생성 완료</span>
-      <span class="result-meta" id="resultMeta"></span>
+            <div class="result-box">
+                <p>① PC 링크</p>
+                <p class="description">사용 예: 홈페이지 PC 링크, 강의 페이지 확인</p>
+                <a id="generated_link_pc" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('pc')" id="copy_button_pc">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>② 모바일 링크</p>
+                <p class="description">사용 예: LMS, 카톡 발송 (핸드폰에서 접속)</p>
+                <a id="generated_link_mobile" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('mobile')" id="copy_button_mobile">링크 복사</button>
+            </div>
+
+            <div class="result-box mt-3">
+                <p>③ APP 링크</p>
+                <p class="description">사용 예: APP으로 접속할 때 (링크 클릭시 핸드폰에서 APP 실행)</p>
+                <a id="generated_link_web" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('web')" id="copy_button_web">링크 복사</button>
+            </div>
+            
+            <div class="result-box mt-3">
+                <p>④ 프리즘 '버튼' 링크</p>
+                <p class="description">사용 예: 프리즘 카드에서 강의 신청 '버튼' 넣을 때 (링크 유형: Web)</p>
+                <a id="generated_link_app" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('app')" id="copy_button_app">링크 복사</button>
+            </div>
+        </div>
+
+        <hr> <div class="section-box" id="section-2">
+            <h2>2. 앱카드 페이지 링크 생성기 (프리즘)</h2>
+            <p class="section-description">'앱카드'에서 '앱카드' 연결에 사용하는 링크를 생성합니다.</p>
+            <div class="input-group">
+                <label for="appcard_number_prism">앱카드 번호 (evntCrdCd):</label>
+                <input type="text" id="appcard_number_prism" placeholder="예: E1102505404201">
+            </div>
+
+            <div class="button-group">
+                <button onclick="generatePrismAppcardLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-2')">초기화</button>
+            </div>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_prism" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('prism')" id="copy_button_prism">링크 복사</button>
+            </div>
+        </div>
+
+        <hr> <div class="section-box" id="section-3">
+            <h2>3. 검색 결과 페이지 링크 생성기</h2>
+            <p class="section-description">특정 검색 조건(점포, 카테고리, 검색어 등)이 적용된 강좌 목록 페이지 링크를 생성합니다.</p>
+
+            <div class="input-group">
+                <label for="device_type">장치 유형:</label>
+                <select id="device_type" onchange="updateBaseUrlSearch()">
+                    <option value="pc">PC</option>
+                    <option value="mobile">모바일 웹</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="base_url_search">기본 URL:</label>
+                <input type="text" id="base_url_search" value="https://www.ehyundai.com/newCulture/CT/CT010100_L.do" readonly>
+            </div>
+
+            <div class="input-group">
+                <label for="category_type">문화센터 카테고리 (ctGubn):</label>
+                <select id="category_type" onchange="updateSearchKeywordOptions()">
+                    <option value="none">-- 선택 안함 --</option>
+                    <option value="CT">문화센터</option>
+                    <option value="CH">CH1985</option>
+                    <option value="CC">커넥트</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="search_store_group" style="display: block;">
+                <label for="store_code_search">점포 코드 (stCd):</label>
+                <select id="store_code_search">
+                    </select>
+            </div>
+
+            <div class="input-group">
+                <label for="search_type">검색 방식:</label>
+                <select id="search_type" onchange="toggleSearchInputs()">
+                    <option value="none">-- 검색 안함 --</option>
+                    <option value="nickname">강좌명 검색 (nickCrsNm)</option>
+                    <option value="keyword">전단 분류 검색 (keyword)</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="nickname_search_group" style="display: none;">
+                <label for="nickname_search_term">강좌명 검색어 (nickCrsNm):</label>
+                <input type="text" id="nickname_search_term" placeholder="예: 트니">
+            </div>
+
+            <div class="input-group" id="keyword_search_group" style="display: none;">
+                <label for="keyword_search_term">전단 분류 선택 (keyword):</label>
+                <select id="keyword_search_term">
+                    </select>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateSearchLink()" class="generate-button">링크 생성</button>
+                <button class="reset-button-custom" onclick="resetSection('section-3')">초기화</button>
+            </div>
+
+            <div class="result-box">
+                <p>생성된 링크:</p>
+                <a id="generated_link_search" href="#" target="_blank"></a>
+                <button class="copy-button-custom" onclick="copyLink('search')" id="copy_button_search">링크 복사</button>
+            </div>
+        </div>
     </div>
 
-    <div class="link-card">
-      <div class="link-card-top"><span class="link-badge">PC</span></div>
-      <div class="link-card-body">
-        <span class="link-url" id="pcUrl"></span>
-        <button class="copy-btn" onclick="copyUrl('pcUrl', this)">복사</button>
-        <button class="open-btn" onclick="openUrl('pcUrl')">바로가기</button>
-      </div>
-    </div>
-
-    <div class="link-card">
-      <div class="link-card-top"><span class="link-badge mobile">모바일</span></div>
-      <div class="link-card-body">
-        <span class="link-url" id="mobileUrl"></span>
-        <button class="copy-btn" onclick="copyUrl('mobileUrl', this)">복사</button>
-        <button class="open-btn" onclick="openUrl('mobileUrl')">바로가기</button>
-      </div>
-    </div>
-
-    <div class="reset-row">
-      <button class="reset-btn" onclick="resetAll()">↺ 다시 만들기</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const STORE_ORDER = [
-  "본점","무역센터","천호","신촌","미아","목동","중동","킨텍스",
-  "디큐브시티","판교","더현대 서울","더현대 대구","울산","동구","충청",
-  "가산아울렛","김포아울렛","동대문아울렛","송도아울렛","가든파이브",
-  "대구아울렛","대전아울렛"
-];
-function sortByOrder(arr) {
-  return arr.slice().sort((a, b) => {
-    const ia = STORE_ORDER.indexOf(a.name), ib = STORE_ORDER.indexOf(b.name);
-    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-  });
-}
-const STORES = {
-  CH: [ { code: "ALL_CH", name: "전체 (모든지점)" } ].concat(sortByOrder([
-    { code: "210", name: "본점" },
-    { code: "400", name: "더현대 서울" },
-    { code: "430", name: "중동" },
-    { code: "460", name: "더현대 대구" }
-  ])),
-  CC: [ { code: "240", name: "부산" } ],
-  GENERAL: [ { code: "ALL", name: "전체 (모든지점)" } ].concat(sortByOrder([
-    { code: "220", name: "무역센터" },
-    { code: "260", name: "천호" },
-    { code: "270", name: "신촌" },
-    { code: "290", name: "울산" },
-    { code: "410", name: "미아" },
-    { code: "420", name: "목동" },
-    { code: "450", name: "킨텍스" },
-    { code: "470", name: "충청" },
-    { code: "480", name: "판교" },
-    { code: "750", name: "가든파이브" }
-  ]))
-};
-const CAT_NAME = { CH: "CH 1985", GENERAL: "문화센터", CC: "컬처커넥트" };
-const PC_BASE = "https://www.ehyundai.com/newCulture/CT/CT010100_L.do";
-const MOBILE_BASE = "https://www.ehyundai.com/mobile/culture/ct_01_01_00_01.do";
-
-function updateStores() {
-  const cat = document.getElementById("category").value;
-  const sel = document.getElementById("store");
-  document.getElementById("result").classList.remove("show");
-  sel.innerHTML = "";
-  if (!cat) {
-    sel.disabled = true;
-    sel.innerHTML = '<option value="">카테고리를 먼저 선택하세요</option>';
-    return;
-  }
-  sel.disabled = false;
-  if (cat === "CC") {
-    const s = STORES.CC[0];
-    sel.innerHTML = '<option value="' + s.code + '">' + s.name + " (" + s.code + ")</option>";
-    return;
-  }
-  sel.innerHTML = '<option value="">선택하세요</option>';
-  STORES[cat].forEach(s => {
-    const o = document.createElement("option");
-    o.value = s.code;
-    o.textContent = (s.code === "ALL_CH" || s.code === "ALL") ? s.name : s.name + " (" + s.code + ")";
-    sel.appendChild(o);
-  });
-}
-function buildUrl(base, cat, stCd, keyword) {
-  const params = ["stCd=" + stCd];
-  if (keyword) params.push("nickNm=" + encodeURIComponent(keyword));
-  if (cat === "CH") params.push("ctGubn=CH");
-  if (cat === "CC") params.push("ctGubn=CC");
-  return base + "?" + params.join("&");
-}
-function generate() {
-  const cat = document.getElementById("category").value;
-  const stCd = document.getElementById("store").value;
-  const keyword = document.getElementById("keyword").value.trim();
-  if (!cat) { alert("카테고리를 선택하세요."); return; }
-  if (!stCd) { alert("점을 선택하세요."); return; }
-
-  document.getElementById("pcUrl").textContent = buildUrl(PC_BASE, cat, stCd, keyword);
-  document.getElementById("mobileUrl").textContent = buildUrl(MOBILE_BASE, cat, stCd, keyword);
-
-  const storeName = document.getElementById("store").selectedOptions[0].textContent;
-  const kw = keyword ? "'" + keyword + "'" : "전체 강좌";
-  document.getElementById("resultMeta").textContent = CAT_NAME[cat] + " · " + storeName + " · " + kw;
-  document.getElementById("result").classList.add("show");
-}
-function copyUrl(id, btn) {
-  const text = document.getElementById(id).textContent;
-  const onDone = () => {
-    btn.textContent = "복사됨 ✓"; btn.classList.add("done"); btn.disabled = true;
-    setTimeout(() => { btn.textContent = "복사"; btn.classList.remove("done"); btn.disabled = false; }, 1300);
-  };
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(text).then(onDone).catch(() => fallbackCopy(text, onDone));
-  } else { fallbackCopy(text, onDone); }
-}
-function openUrl(id) {
-  const url = document.getElementById(id).textContent;
-  if (url) window.open(url, "_blank", "noopener");
-}
-function resetAll() {
-  document.getElementById("category").value = "";
-  updateStores();
-  document.getElementById("keyword").value = "";
-  document.getElementById("result").classList.remove("show");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-function fallbackCopy(text, onDone) {
-  const ta = document.createElement("textarea");
-  ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try { document.execCommand("copy"); onDone(); }
-  catch (e) { alert("복사에 실패했습니다. 링크를 직접 선택해 복사해 주세요."); }
-  document.body.removeChild(ta);
-}
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
